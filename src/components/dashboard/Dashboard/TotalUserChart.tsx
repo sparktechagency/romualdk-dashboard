@@ -33,7 +33,7 @@ const TotalUserChart = () => {
         {isVisible && (
           <div className="p-2 rounded-md bg-[#9c6243] text-white shadow">
             <p className="label  font-semibold text-sm whitespace-nowrap">{`New : ${payload[0]?.value}`}</p>
-            <p className="label  font-semibold text-sm whitespace-nowrap">{`${payload[1]?.name} : ${payload[0].value}`}</p>
+            <p className="label  font-semibold text-sm whitespace-nowrap">{`${payload[0]?.name} : ${payload[0].value}`}</p>
             <span></span>
           </div>
         )}

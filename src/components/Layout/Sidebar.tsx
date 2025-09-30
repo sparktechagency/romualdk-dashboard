@@ -2,6 +2,7 @@ import { Button, ConfigProvider, Layout, Menu } from "antd";
 import { FiLogOut } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { sidebarItems } from "../../utils/sidebarItems";
+import Cookies from "js-cookie";
 
 const { Sider } = Layout;
 
@@ -33,7 +34,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () =>{
-    navigate("/login")
+    navigate("/login");
+    Cookies.remove("accessToken")
   }
   return (
     <ConfigProvider
@@ -57,7 +59,7 @@ const Sidebar = () => {
     >
       <Sider width={250} theme="light"  breakpoint="md" collapsedWidth="0" className="border-r border-gray-100">
         <div className=" w-full h-[100px] ">
-        <img src="/Horizontal_logo.png"  className="w-48 pt-5 mx-auto" alt="" />
+          <Link to="/"><img src="/Horizontal_logo.png"  className="w-48 pt-5 mx-auto" alt="" /></Link>
         </div>
         <div className="flex flex-col" style={{height: "calc(100vh - 100px)",}}>
         <Menu theme="light" mode="inline" selectedKeys={[location?.pathname]} items={generateSidebarItems(sidebarItems)}  style={{flexGrow: 1, overflowY: "auto", }}/>

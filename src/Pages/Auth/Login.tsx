@@ -1,19 +1,47 @@
 import { Button, Checkbox, ConfigProvider, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
-import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-import { Link } from "react-router-dom";
+import {
+  MdEmail,
+  MdOutlineVisibility,
+  MdOutlineVisibilityOff,
+} from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginAdminMutation } from "../../redux/features/auth/authApi";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const Login = () => {
   const [form] = useForm();
+  const [adminLogin] = useLoginAdminMutation();
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const email = Cookies.get("email");
+    const password = Cookies.get("password");
+    if (email && password) {
+      form.setFieldsValue({ email, password });
+    }
+  }, []);
 
   const handleLogin = async (values: any) => {
     try {
-      console.log("handleLogin", values);
+      if (values?.remember == true) {
+        Cookies.set("email", values.email);
+        Cookies.set("password", values.password);
+      }
+
+      const res = await adminLogin(values).unwrap();
+      toast.success(res?.message);
+      Cookies.set("accessToken", res?.data?.token);
+      
+      navigate("/")
     } catch (error) {
-      console.log(error);
+      toast.error((error as any)?.data?.message);
     }
   };
+
   return (
     <ConfigProvider
       theme={{
@@ -31,7 +59,7 @@ const Login = () => {
             inputFontSize: 16,
             // activeBg: "#989898",
             colorBgBlur: "#989898",
-            colorTextPlaceholder: "#757575 ",            
+            colorTextPlaceholder: "#757575 ",
           },
           Checkbox: {
             colorBgContainer: "transparent",
@@ -69,7 +97,7 @@ const Login = () => {
               ]}
             >
               <Input
-            style={{  height: 48 }}
+                style={{ height: 48 }}
                 placeholder="example@gmail.com"
                 autoComplete="off"
               />
@@ -90,7 +118,7 @@ const Login = () => {
               <Input.Password
                 name="password"
                 minLength={6}
-                style={{                  
+                style={{
                   height: 48,
                   cursor: "pointer",
                 }}
@@ -105,10 +133,20 @@ const Login = () => {
               />
             </FormItem>
             <div className="flex items-center justify-between">
-              <Form.Item name="remember" style={{marginBottom: 0}} valuePropName="checked" label={null}>
-                <Checkbox >Remember me</Checkbox>
+              <Form.Item
+                name="remember"
+                style={{ marginBottom: 0 }}
+                valuePropName="checked"
+                label={null}
+              >
+                <Checkbox>Remember me</Checkbox>
               </Form.Item>
-              <Link to="/forgot-password" className="!text-gray-600 font-medium text-[15px]">Forgot Password ?</Link>
+              <Link
+                to="/forgot-password"
+                className="!text-gray-600 font-medium text-[15px]"
+              >
+                Forgot Password ?
+              </Link>
             </div>
 
             <Button
@@ -118,7 +156,7 @@ const Login = () => {
               shape="round"
               style={{
                 width: "100%",
-                height: 50,                           
+                height: 50,
                 marginTop: 20,
               }}
             >

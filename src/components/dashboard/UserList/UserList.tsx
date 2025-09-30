@@ -8,13 +8,34 @@ import { useState } from "react";
 import { CiLock, CiUnlock } from "react-icons/ci";
 import { TbMessageDots } from "react-icons/tb";
 import UserDetailsModal from "./UserDetailsModal";
+import { useGetUsersQuery, useUpdateUserMutation } from "../../../redux/features/user/userApi";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 const UserList = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [openWarning, setOpenWarning] = useState(false);
-
   const [openUserDetails, setOpenUserDetails] = useState(false);
+  const {data: usersData, isLoading} = useGetUsersQuery(undefined)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const [updateUser] = useUpdateUserMutation()
+  const updateSearchParams = useUpdateSearchParams()
   
+
+  const handleUpdateStatus = async (record :any)=>{
+    try {
+      const data = {id: record?._id, status : record?.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' }
+      const res = await updateUser(data);
+      
+      toast.success(res?.data?.message);
+    } catch (error) {
+      console.log(" handleUpdateStatus error",error);      
+    }
+  }
+  const pageSize = usersData?.pagination?.limit ?? 10;
+
   const columns = [
     {
       title: "SL No",
@@ -33,32 +54,23 @@ const UserList = () => {
       dataIndex: "email",
       key: "email",
     },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Total Buy",
-      dataIndex: "totalBuy",
-      key: "totalBuy",
-      render: (value: number) => <b>{value}</b>,
-    },
-    {
-      title: "Total Sale",
-      dataIndex: "totalSale",
-      key: "totalSale",
-      render: (value: number) => <b>{value}</b>,
-    },       
+           
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
     },
+     {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text : string)=> <span className={`${text == 'ACTIVE' ? 'text-green-500' : 'text-red-400'} font-semibold`}>{text}</span>
+    },  
     {
       title: "Join Date",
       dataIndex: "joinDate",
       key: "joinDate",
+      render: (text : string)=> dayjs(text).format("DD MMM, YY")
     },
     {
       title: "Action",
@@ -77,7 +89,8 @@ const UserList = () => {
             />
           </Tooltip>
           <Tooltip title={record?.status == "Active" ? "Active" : "Banned"}>
-           { record?.status == "Active" ?  <CiUnlock
+            <div className="" onClick={()=>handleUpdateStatus(record)}>
+           { record?.status?.toLowerCase() == "active" ?  <CiUnlock
               size={20}
               style={{ color: "green", cursor: "pointer" }}
               onClick={() => console.log("Banned:", record)}
@@ -88,6 +101,7 @@ const UserList = () => {
               onClick={() => console.log("Banned:", record)}
             />
             }
+            </div>
 
           </Tooltip>          
           <Tooltip title="Edit">
@@ -135,10 +149,16 @@ const UserList = () => {
         onSubmit={(reason) => console.log("Warning reason:", reason)}
       />
       <Table
-        dataSource={dataSource}
+        dataSource={usersData?.data}
         columns={columns}
+        loading={isLoading}
         bordered
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          total: usersData?.pagination?.total,
+          current: currentPage,
+          pageSize,    
+          onChange: (page) => setCurrentPage(page),     
+        }}
       />      
       <UserDetailsModal   
       open={openUserDetails}

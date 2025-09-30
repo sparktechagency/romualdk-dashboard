@@ -1,11 +1,23 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Space, Table, Tooltip } from "antd";
+import { Button, Image, Space, Table, Tooltip } from "antd";
 import { useState } from "react";
 import AddcategoryModal from "./AddcategoryModal";
+import { useDeleteCategoryMutation, useGetCategoriesQuery } from "../../../redux/features/categoryApi";
+import { imageUrl } from "../../../redux/base/baseAPI";
+import ConfirmModel from "../../UI/ConfirmModel";
+import toast from "react-hot-toast";
 
 const Categories = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  
+  const {data: categoryData, refetch} = useGetCategoriesQuery(undefined);
+  const [deleteCategory] = useDeleteCategoryMutation();
+
+   const pageSize = categoryData?.pagination?.limit ?? 10;
+
   const columns = [
     {
       title: "SL No",
@@ -16,8 +28,14 @@ const Categories = () => {
     },
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "title",
+      key: "title",
+      render: (_:any, record:any)=> 
+      <div className="flex items-center gap-3">
+        <Image src={`${imageUrl}${record?.image}`} width={70} height={70} alt="Logo" className="rounded-full" />
+
+        <span className="font-bold">{record?.title}</span>
+      </div>,
       width: "85%"
     },
     {
@@ -40,7 +58,7 @@ const Categories = () => {
             <DeleteOutlined
               size={20}
               style={{ color: "red", cursor: "pointer" }}
-              onClick={() => console.log("Delete category:", record)}
+              onClick={() => {setSelectedCategory(record); setOpenConfirm(true)}}
             />
           </Tooltip>
         </Space>
@@ -48,29 +66,25 @@ const Categories = () => {
     },
   ];
 
-  // Sample data for categories (you can replace this with your actual data)
-  const dataSource = [
-    {
-      key: "1",
-      name: "Category 1",
-    },
-    {
-      key: "2",
-      name: "Category 2",
-    },
-    {
-      key: "3",
-      name: "Category 3",
-    },
-    {
-      key: "4",
-      name: "Category 4",
-    },
-    {
-      key: "5",
-      name: "Category 5",
-    },
-  ];
+
+    // --------------- Action --------------
+  const handleDeleteCategory = async () => {    
+    try {
+      const res = await deleteCategory((selectedCategory as any)?._id);
+      
+      if (res?.data) {
+        toast.success("Delete FAQ Successfully");
+        setOpenConfirm(false);
+        setSelectedCategory(null)
+        refetch();
+      }
+    } catch (error) {
+      console.log("toast error", error),
+       toast.error("Some thing wrong")
+      }
+  };
+
+
 
   return (
     <div className="bg-white rounded-xl p-6 h-full">
@@ -80,17 +94,38 @@ const Categories = () => {
       </div>
 
       <Table
-        dataSource={dataSource}
+        dataSource={categoryData?.data}
         columns={columns}
         bordered
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          pageSize,
+          total: categoryData?.pagination?.total,
+          current: currentPage,
+          onChange: (page)=>setCurrentPage(page)
+        }}
       />
 
       <AddcategoryModal  
-      open={open}        
-      onClose={() => setOpen(false)}
-      editData={selectedCategory}      
+      open={open}   
+      setOpen={setOpen}           
+      editData={selectedCategory}   
+      setSelectedCategory={setSelectedCategory}
+      refetch={refetch}   
       />
+
+      <ConfirmModel
+        open={openConfirm}
+        title="Delete Category?"
+        content={`Are you sure you want to delete "${(selectedCategory as any)?.title} category"?`}
+        okText="Yes, Delete"
+        cancelText="Cancel"
+        onConfirm={handleDeleteCategory}
+        onCancel={() => {
+          setOpenConfirm(false);
+          setSelectedCategory(null);
+        }}
+      />
+
     </div>
   );
 };

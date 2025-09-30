@@ -18,12 +18,13 @@ import Setting from "../dashboard/Setting";
 import { ChangePassword } from "../dashboard/ChangePassword";
 import PrivacyPolicy from "../dashboard/PrivacyPolicy";
 import TermsCondition from "../dashboard/TermsCondition";
+import PrivateRoute from "./PrivateRoute";
 
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <MainLayout />,
+        element: <PrivateRoute> <MainLayout /> </PrivateRoute>,
         errorElement: <ErrorPage />,
         children: [
             {

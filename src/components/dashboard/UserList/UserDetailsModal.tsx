@@ -29,7 +29,7 @@ const UserDetailsModal = ({ open, data, onClose }:any) => {
           <p className="text-[#808080] text-[15px] font-medium mb-1">Status</p>
           <span
             className={`font-semibold text-[15px] ${
-              data?.status === "Active" ? "text-green-600" : "text-red-600"
+              data?.status?.toLowerCase() === "active" ? "text-green-600" : "text-red-600"
             }`}
           >
             {data?.status}
@@ -41,26 +41,7 @@ const UserDetailsModal = ({ open, data, onClose }:any) => {
           <p className="text-[#808080] text-[15px] font-medium mb-1">Email</p>
           <p className="text-[15px] font-medium">{data?.email}</p>
         </Col>
-
-        {/* Contact */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">Contact</p>
-          <p className="text-[15px] font-medium">{data?.contact}</p>
-        </Col>
-
-        {/* Address */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">Address</p>
-          <p className="text-[15px] font-medium">{data?.address}</p>
-        </Col>
-
-        {/* Playlist Count */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">
-            Playlist Count
-          </p>
-          <p className="text-[15px] font-medium">{data?.playlist}</p>
-        </Col>
+        
 
         {/* Role */}
         <Col span={12}>
@@ -77,22 +58,16 @@ const UserDetailsModal = ({ open, data, onClose }:any) => {
             {dayjs(data?.joinDate).format("DD MMMM, YYYY")}
           </p>
         </Col>
-
-        {/* Total Buy */}
-        <Col span={12}>
+        {/* Join Date */}
+        {data?.role?.toLowerCase() == 'artist' && <Col span={12}>
           <p className="text-[#808080] text-[15px] font-medium mb-1">
-            Total Buy
+            Followers
           </p>
-          <p className="text-[15px] font-medium">{data?.totalBuy}</p>
-        </Col>
-
-        {/* Total Sale */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">
-            Total Sale
+          <p className="text-[15px] text-blue-800 font-bold">
+            {data?.followers}
           </p>
-          <p className="text-[15px] font-medium">{data?.totalSale}</p>
-        </Col>
+        </Col>}
+        
       </Row>
     </Modal>
   );
