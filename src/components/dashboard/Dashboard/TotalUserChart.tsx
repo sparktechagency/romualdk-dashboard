@@ -1,4 +1,6 @@
-import { ConfigProvider, Select } from "antd";
+// import { ConfigProvider, Select } from "antd";
+import { Box, FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from "@mui/material";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -10,28 +12,50 @@ import {
   YAxis,
 } from "recharts";
 
-const { Option } = Select;
+// const { Option } = Select;
 
-const TotalUserChart = () => {
-  const CustomTooltip = ({ active, payload,  coordinate }: any) => {
+type TUserGrowth = {
+  month: string;
+  guest: number;
+  hosts: number;
+};
+
+// Sample chart data
+const userGrowthData: TUserGrowth[] = [
+  { month: "Jan", guest: 800, hosts: 400 },
+  { month: "Feb", guest: 900, hosts: 600 },
+  { month: "Mar", guest: 1000, hosts: 800 },
+  { month: "Apr", guest: 1100, hosts: 900 },
+  { month: "May", guest: 1300, hosts: 1000 },
+  { month: "Jun", guest: 1400, hosts: 1100 },
+  { month: "Jul", guest: 1500, hosts: 1200 },
+  { month: "Aug", guest: 1600, hosts: 1400 },
+  { month: "Sep", guest: 1700, hosts: 1500 },
+  { month: "Oct", guest: 1800, hosts: 1700 },
+  { month: "Nov", guest: 2000, hosts: 1800 },
+  { month: "Dec", guest: 2200, hosts: 2000 },
+];
+
+const TotalUserChart = ({
+  userGrowth = userGrowthData,
+}: {
+  userGrowth: TUserGrowth[];
+}) => {
+  const [age, setAge] = useState("")
+
+  const CustomTooltip = ({ active, payload }: any) => {
     const isVisible = active && payload && payload.length;
-    const tooltipHeight = 40; // Height of your tooltip (you may need to adjust this)
 
-    const tooltipY = coordinate ? coordinate.y - tooltipHeight / 2 : 0;    
 
     return (
       <div
-        className="top-20 mr-10"
+        className="top-20 mr-10 mb-10 "
         style={{
-          visibility: isVisible ? "visible" : "hidden",
-          position: "absolute",
-          left: coordinate ? coordinate.x - 20 : 0, // Center horizontally
-          top: tooltipY, // Center vertically relative to the chart
-          transform: "translateY(0)", // Ensure no additional vertical offset
+          visibility: isVisible ? "visible" : "hidden",          
         }}
       >
         {isVisible && (
-          <div className="p-2 rounded-md bg-[#9c6243] text-white shadow">
+          <div className="p-2 rounded-md bg-primary/90 text-white shadow">
             <p className="label  font-semibold text-sm whitespace-nowrap">{`New : ${payload[0]?.value}`}</p>
             <p className="label  font-semibold text-sm whitespace-nowrap">{`${payload[0]?.name} : ${payload[0].value}`}</p>
             <span></span>
@@ -41,16 +65,40 @@ const TotalUserChart = () => {
     );
   };
 
-  const year = new Date().getFullYear();
-  
-  return (
-    <div className="w-full pb-5 pt-8 bg-white rounded-xl mt-6">
-      <div className="flex items-center justify-between px-6">
-        <p className="font-semibold text-primary text-2xl">
-          Users
-        </p>
 
-        <ConfigProvider
+    const handleChange = (event: SelectChangeEvent) => {
+    console.log(event.target.value as string);
+    setAge(event.target.value as string);
+  };
+
+  return (
+    <div className="w-full pb-5 pt-8 bg-white rounded-xl mt-6 shadow mb-10">
+      <div className="flex items-center justify-between px-6">
+        <p className="font-semibold text-primary text-2xl">Geasts Vs Hosts</p>
+        <Box sx={{
+          minWidth: 150,
+          py:0,          
+        }}>
+        <FormControl fullWidth>
+          <InputLabel id="chart" size="small">Age</InputLabel>
+          <Select 
+          labelId="chart" 
+          label="Monthly"
+          onChange={handleChange}
+          size="small"
+          value={age || ""}
+          >
+            <MenuItem value="">None</MenuItem>
+            <MenuItem value="Gueast" sx={{display: 'flex'}}>
+              <span className="w-3 h-3 bg-blue mr-2 inline-block" /> Guasts
+            </MenuItem>
+            <MenuItem value="Hosts" sx={{display: 'flex'}}>
+              <span className="w-3 h-3 bg-primary mr-2 inline-block" /> Hosts
+            </MenuItem>
+          </Select>
+        </FormControl>
+</Box>
+        {/* <ConfigProvider
           theme={{
             components: {
               Select: {
@@ -78,13 +126,13 @@ const TotalUserChart = () => {
             <Option value={year - 3}>{year - 3}</Option>
             <Option value={year - 4}>{year - 4}</Option>
           </Select>
-        </ConfigProvider>
+        </ConfigProvider> */}
       </div>
 
       <div className="mt-6">
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={300}>
           <BarChart
-            data={userChartData}
+            data={userGrowthData}
             style={{ backgroundColor: "rgba(0,0,,0,.3)" }}
             margin={{
               top: 5,
@@ -95,14 +143,20 @@ const TotalUserChart = () => {
           >
             <CartesianGrid vertical={false} strokeDasharray={1} />
             <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip position={{ y: -10 }} content={CustomTooltip} />
-            <Legend />           
+            <YAxis axisLine={false}/>
+            <Tooltip  content={CustomTooltip} />
+            <Legend />
             <Bar
               barSize={25}
               //   radius={50}
-              dataKey="Users"
-              fill="#8B4E2E"
+              dataKey="guest"
+              fill="#3781FD"
+            />
+            <Bar
+              barSize={25}
+              //   radius={50}
+              dataKey="hosts"
+              fill="#40CACD"
             />
           </BarChart>
         </ResponsiveContainer>

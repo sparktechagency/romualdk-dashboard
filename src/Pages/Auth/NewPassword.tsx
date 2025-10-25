@@ -1,123 +1,137 @@
-import { Button, ConfigProvider, Form, Input } from "antd";
-import { useForm } from "antd/es/form/Form";
-import FormItem from "antd/es/form/FormItem";
+import React, { useState } from "react";
+import {
+  Container,
+  Grid,
+  TextField,
+  Button,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
-const NewPassword = () => {
-  const [form] = useForm();
+const NewPassword: React.FC = () => {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleLogin = async (values: any) => {
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+  const handleToggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
+
+  const handleNewPassword = async (e: any) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const values = {
+      newPassword: formData.get("newPassword") as string,
+      confirmPassword: formData.get("confirmPassword") as string,
+    };
+
+    if (values.newPassword !== values.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try {
-      console.log("handleLogin", values);
-    } catch (error) {
-      console.log(error);
+      console.log("New Password Request:", values);
+      toast.success("Password updated successfully!");
+      navigate("/signin"); // Redirect to SignIn page
+    } catch (error: any) {
+      console.error("New Password Error:", error);
+      toast.error(error?.message || "Something went wrong");
     }
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#8B4E2E", // Consistent color with other pages
-          colorBgContainer: "#F1F4F9", // Same background color as previous pages
-        },
-        components: {
-         Input: {
-            borderRadius: 12,
-            colorBorder: "#8B4E2E", // Consistent border color
-            colorPrimaryBg: "#121212",
-            colorText: "#757575",
-            inputFontSize: 16,
-            colorBgBlur: "#989898",
-            colorTextPlaceholder: "#757575",
-          },
-        },
-      }}
-    >
-      <div className="flex items-center justify-center h-screen">
-        <div className="border border-borderColor rounded-xl px-12 py-8 min-w-xl">
-          <img src="/logo.png" className="w-18 mb-5 mx-auto" alt="" />
-          <h1 className="text-center text-primary text-2xl font-semibold mb-4">
-            Set New Password
-          </h1>
-          <p className="text-center text-gray text-lg mb-8">
-            Create a strong password to keep your account secure.
-          </p>
+    <div className="bg-bgColor min-h-[100vh] flex items-center justify-center">
+      <Container maxWidth="sm">
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          style={{ minHeight: "80vh" }}
+        >
+          <div className="bg-white rounded-lg p-6 border border-primary w-full">
+            <img src="/logo.png" alt="Logo" className="w-24 mb-5 mx-auto" />
+            <h1 className="text-center text-primary text-2xl font-semibold mb-4">
+              Set New Password
+            </h1>
+            <p className="text-center text-gray-600 text-lg mb-8">
+              Create a strong password to keep your account secure.
+            </p>
 
-          <Form form={form} layout="vertical" onFinish={handleLogin}>
-            <FormItem
-              name="newPassword"
-              label={<p className="text-gray font-semibold text-lg">New Password</p>}
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your New Password",
-                },
-              ]}
-            >
-              <Input.Password
+            <form onSubmit={handleNewPassword}>
+              <TextField
                 name="newPassword"
-                minLength={6}
-                style={{                  
-                  height: 48,
-                  cursor: "pointer",
-                }}
+                type={showPassword ? "text" : "password"}
+                label="New Password"
+                fullWidth
+                required
+                margin="normal"
+                variant="outlined"
                 placeholder="New Password"
-                iconRender={(visible) =>
-                  visible ? (
-                    <MdOutlineVisibility size={20} color="#808080" />
-                  ) : (
-                    <MdOutlineVisibilityOff size={20} color="#808080" />
-                  )
-                }
-              />
-            </FormItem>
-
-            <FormItem
-              name="confirmPassword"
-              label={<p className="text-gray font-semibold text-lg">Confirm Password</p>}
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your Confirm Password",
-                },
-              ]}
-            >
-              <Input.Password
-                name="confirmPassword"
-                minLength={6}
-                style={{                  
-                  height: 48,
-                  cursor: "pointer",
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleTogglePassword} edge="end">
+                        {showPassword ? (
+                          <MdOutlineVisibilityOff />
+                        ) : (
+                          <MdOutlineVisibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                 }}
-                placeholder="Confirm Password"
-                iconRender={(visible) =>
-                  visible ? (
-                    <MdOutlineVisibility size={20} color="#808080" />
-                  ) : (
-                    <MdOutlineVisibilityOff size={20} color="#808080" />
-                  )
-                }
+                sx={{ "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#0095FF" } }}
               />
-            </FormItem>
 
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              style={{
-                width: "100%",
-                height: 50,
-                borderRadius: 20,                
-                marginTop: 20,
-              }}
-            >
-              Update
-            </Button>
-          </Form>
-        </div>
-      </div>
-    </ConfigProvider>
+              <TextField
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                label="Confirm Password"
+                fullWidth
+                required
+                margin="normal"
+                variant="outlined"
+                placeholder="Confirm Password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleToggleConfirmPassword} edge="end">
+                        {showConfirmPassword ? (
+                          <MdOutlineVisibilityOff />
+                        ) : (
+                          <MdOutlineVisibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#0095FF" } }}
+              />
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                className="!bg-primary"
+                sx={{
+                  mt: 3,
+                  py: 1.2,
+                  fontWeight: "bold",
+                  borderRadius: "20px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                }}
+              >
+                Update
+              </Button>
+            </form>
+          </div>
+        </Grid>
+      </Container>
+    </div>
   );
 };
 

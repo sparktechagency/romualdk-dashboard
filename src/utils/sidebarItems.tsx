@@ -69,18 +69,18 @@ export const sidebarItems = [
         path: "policy",
         icon: <PiUsersThreeLight size={20} />,
       },
-      // {
-      //   key: "about",
-      //   label: "About Us",
-      //   path: "about",
-      //   icon: <PiUsersThreeLight size={20} />,
-      // },
-      // {
-      //   key: "faq",
-      //   label: "FAQ",
-      //   path: "faq",
-      //   icon: <PiUsersThreeLight size={20} />,
-      // },
+      {
+        key: "about",
+        label: "About Us",
+        path: "about",
+        icon: <PiUsersThreeLight size={20} />,
+      },
+      {
+        key: "faq",
+        label: "FAQ",
+        path: "faq",
+        icon: <PiUsersThreeLight size={20} />,
+      },
     ],
   },
 ];

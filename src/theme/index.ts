@@ -28,10 +28,11 @@ token: { colorPrimary: "#8B4E2E" },
             colorTextPlaceholder: "#808080", 
           },
           Collapse: {
-            headerBg: "#404040",
-            contentBg: "#232323",
-            colorText: "#909090",
-            fontSize: 18,                        
+            headerBg: "#8B4E2E",
+            contentBg: "#ededed",
+            colorText: "#ffffff",
+            fontSize: 18,    
+            colorBorder: '#8B4E2E'
           },
           Pagination: {
             itemActiveBg: "#8B4E2E",

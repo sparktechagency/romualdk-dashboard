@@ -1,172 +1,162 @@
-import { Button, Checkbox, ConfigProvider, Form, Input } from "antd";
-import { useForm } from "antd/es/form/Form";
-import FormItem from "antd/es/form/FormItem";
+import React, { useState,  useEffect } from "react";
 import {
-  MdEmail,
-  MdOutlineVisibility,
-  MdOutlineVisibilityOff,
-} from "react-icons/md";
+  TextField,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { HiOutlineMailOpen } from "react-icons/hi";
+import { MdOutlineLock } from "react-icons/md";
+import { IoMdEyeOff, IoMdEye } from "react-icons/io";
+import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginAdminMutation } from "../../redux/features/auth/authApi";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
-import { useEffect } from "react";
 
-const Login = () => {
-  const [form] = useForm();
-  const [adminLogin] = useLoginAdminMutation();
-  const navigate = useNavigate()
 
-  useEffect(() => {
-    const email = Cookies.get("email");
-    const password = Cookies.get("password");
-    if (email && password) {
-      form.setFieldsValue({ email, password });
-    }
-  }, []);
+const SignIn: React.FC = () => {
+  const navigate = useNavigate();
+  const [login] = useLoginAdminMutation();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async (values: any) => {
+  const handleShowPassword = () => setShowPassword((prev) => !prev);
+
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const values = {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    };
+
     try {
-      if (values?.remember == true) {
-        Cookies.set("email", values.email);
-        Cookies.set("password", values.password);
-      }
+      const res = await login(values).unwrap();
 
-      const res = await adminLogin(values).unwrap();
-      toast.success(res?.message);
-      Cookies.set("accessToken", res?.data?.token);
-      
-      navigate("/")
-    } catch (error) {
-      toast.error((error as any)?.data?.message);
+      if (res?.success) {
+        toast.success(res?.message || "Login Successful");
+        sessionStorage.setItem("accessToken", res?.data?.accessToken);
+        sessionStorage.setItem("refreshToken", res?.data?.refreshToken);
+        navigate("/");
+      } else {
+        toast.error("Login failed");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast.error(error?.data?.message || "Something went wrong while logging in");
     }
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#8B4E2E",
+    <div className="bg-bgColor min-h-[100vh] flex items-center justify-center">
+      <Container maxWidth="sm">
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          style={{ minHeight: "80vh" }}
+        >
+          <div className="bg-white rounded-lg p-6 border border-primary w-full">
+            <p className="text-3xl text-center text-primary font-semibold mb-7">
+              Sign in to continue!
+            </p>
 
-          colorBgContainer: "#F1F4F9",
-        },
-        components: {
-          Input: {
-            borderRadius: 12,
-            colorBorder: "#8B4E2E",
-            colorPrimaryBg: "#121212",
-            colorText: "#757575",
-            inputFontSize: 16,
-            // activeBg: "#989898",
-            colorBgBlur: "#989898",
-            colorTextPlaceholder: "#757575 ",
-          },
-          Checkbox: {
-            colorBgContainer: "transparent",
-            colorBorder: "#989898",
-            colorText: "#989898",
-            fontSize: 15,
-            colorPrimary: "#989898",
-            colorPrimaryHover: "#989898",
-            controlInteractiveSize: 20,
-            borderRadiusSM: 50,
-          },
-        },
-      }}
-    >
-      <div className="flex items-center justify-center h-screen">
-        <div className="border border-borderColor rounded-xl px-12 py-8 min-w-xl">
-          <img src="/logo.png" className="w-18 mb-5 mx-auto" alt="" />
-          <h1 className="text-center text-primary text-2xl font-semibold mb-4">
-            Sign In
-          </h1>
-          <p className="text-center text-gray text-lg mb-8">
-            Please enter your email and password to continue
-          </p>
-
-          <Form form={form} layout="vertical" onFinish={handleLogin}>
-            <FormItem
-              name="email"
-              label={<p className="text-gray font-semibold text-lg">Email</p>}
-              rules={[
-                {
-                  required: true,
-                  type: "email",
-                  message: "Please enter your email",
-                },
-              ]}
-            >
-              <Input
-                style={{ height: 48 }}
-                placeholder="example@gmail.com"
-                autoComplete="off"
-              />
-            </FormItem>
-
-            <FormItem
-              name="password"
-              label={
-                <p className="text-gray font-semibold text-lg">Password</p>
-              }
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your Password",
-                },
-              ]}
-            >
-              <Input.Password
-                name="password"
-                minLength={6}
-                style={{
-                  height: 48,
-                  cursor: "pointer",
+            <form onSubmit={handleLogin}>
+              <TextField
+                name="email"
+                type="email"
+                label="Email"
+                fullWidth
+                required
+                margin="normal"
+                variant="outlined"
+                placeholder="Enter your email"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <HiOutlineMailOpen className="text-[#2454c4]" />
+                    </InputAdornment>
+                  ),
                 }}
-                placeholder="Enter Password"
-                iconRender={(visible) =>
-                  visible ? (
-                    <MdOutlineVisibility size={20} color="#808080" />
-                  ) : (
-                    <MdOutlineVisibilityOff size={20} color="#808080" />
-                  )
-                }
+                sx={{
+                  "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                    borderColor: "#0095FF",
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#0095FF",
+                  },
+                }}
               />
-            </FormItem>
-            <div className="flex items-center justify-between">
-              <Form.Item
-                name="remember"
-                style={{ marginBottom: 0 }}
-                valuePropName="checked"
-                label={null}
-              >
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item>
-              <Link
-                to="/forgot-password"
-                className="!text-gray-600 font-medium text-[15px]"
-              >
-                Forgot Password ?
-              </Link>
-            </div>
 
-            <Button
-              type="primary"
-              size="large"
-              htmlType="submit"
-              shape="round"
-              style={{
-                width: "100%",
-                height: 50,
-                marginTop: 20,
-              }}
-            >
-              Verify
-            </Button>
-          </Form>
-        </div>
-      </div>
-    </ConfigProvider>
+              <TextField
+                name="password"
+                type={showPassword ? "text" : "password"}
+                label="Password"
+                fullWidth
+                required
+                margin="normal"
+                variant="outlined"
+                placeholder="Enter your password"                
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MdOutlineLock className="text-[#2454c4]" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleShowPassword} edge="end">
+                        {showPassword ? (
+                          <IoMdEyeOff  />
+                        ) : (
+                          <IoMdEye  />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                    borderColor: "#0095FF",
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#0095FF",
+                  },
+                }}
+              />
+
+              <div className="flex items-center justify-end mt-2">
+                <Link
+                  to="/forgot-password"
+                  className="text-[#131927] font-semibold underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                className="!bg-primary"
+                sx={{
+                  mt: 2,
+                  py: 1.2,
+                  fontWeight: "bold",
+                  borderRadius: "20px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                }}
+              >
+                Sign In
+              </Button>
+            </form>
+          </div>
+        </Grid>
+      </Container>
+    </div>
   );
 };
 
-export default Login;
+export default SignIn;

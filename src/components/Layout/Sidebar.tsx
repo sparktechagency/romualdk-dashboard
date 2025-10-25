@@ -1,76 +1,140 @@
-import { Button, ConfigProvider, Layout, Menu } from "antd";
-import { FiLogOut } from "react-icons/fi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { sidebarItems } from "../../utils/sidebarItems";
-import Cookies from "js-cookie";
+import React, { useState } from "react";
+import {
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Box,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 
-const { Sider } = Layout;
+import { Link, useLocation } from "react-router-dom";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { navItems } from "./SidebarItems";
 
-const Sidebar = () => {
+
+
+const Sidebar = ({open}: {open: boolean}) => {
+  
   const location = useLocation();
 
-  const generateSidebarItems = (items: any) => {
-    return items?.map((item: any) => {
-      if(item?.children){
-        return {
-          key: item?.key,
-          icon: item?.icon,
-          label: item?.label,
-          children: item?.children?.map((child :any)=> ({
-            key: `/${child?.path}`,
-            icon: child?.icon,
-            label: <Link to={`/${child?.path}`}>{child?.label}</Link>
-          }))
-        }
-      }
-      return {
-        key: `/${item?.key}`,
-        icon: item?.icon,
-        label: <Link to={`/${item?.path}`}>{item?.label}</Link>,
-      };
-    });
-  };
-
-  const navigate = useNavigate();
-
-  const handleLogout = () =>{
-    navigate("/login");
-    Cookies.remove("accessToken")
+  const handleLogout = ()=>{
+    alert('logout func')
   }
   return (
-    <ConfigProvider
-      theme={{
-        token: { colorPrimary: "#8B4E2E" },
-        components: {
-          Menu: {
-            // itemSelectedBg: "#1A1A1A",
-            itemSelectedBg: "#8B4E2E",
-            itemSelectedColor: "#ffffff",
-            itemColor:"#121212",
-            itemActiveBg: "#8B4E2E",
-            itemHoverBg: "rgba(139,78,46, .8)",
-            itemHoverColor: "#ffffff",
-            itemBorderRadius: 0,
-            itemHeight: 45,
-            itemMarginBlock: 12,
-          },
+    <Drawer
+    className="relative"  
+    variant="permanent"
+      sx={{        
+        width: open ? 260 : 80,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
+          width: open ? 260 : 80,
+          boxSizing: "border-box",
+          backgroundColor: "#131927",
+          color: "#fff",
+          transition: "width 0.3s ease",
+          borderRight: "none",          
         },
       }}
     >
-      <Sider width={250} theme="light"  breakpoint="md" collapsedWidth="0" className="border-r border-gray-100">
-        <div className=" w-full h-[100px] ">
-          <Link to="/"><img src="/Horizontal_logo.png"  className="w-48 pt-5 mx-auto" alt="" /></Link>
-        </div>
-        <div className="flex flex-col" style={{height: "calc(100vh - 100px)",}}>
-        <Menu theme="light" mode="inline" selectedKeys={[location?.pathname]} items={generateSidebarItems(sidebarItems)}  style={{flexGrow: 1, overflowY: "auto", }}/>
+      <Box className="flex flex-col items-center py-4 ">
+        <Link to="/">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className={`${
+              open ? "w-36 " : "w-8 h-8"
+            } object-cover transition-all`}
+          />
+        </Link>
+        <Divider
+          sx={{
+            width: open ? "200px" : "32px",
+            mt: 1,
+            mb: 2,
+            alignSelf: "center",
+            borderTopWidth: 3,
+            borderTopStyle: "solid",
+            borderImage:
+              "linear-gradient(90deg, rgba(224, 225, 226, 0) 0%, #E0E1E2 49.52%, rgba(224, 225, 226, 0.15625) 99.04%) 1",
+            borderImageSlice: 1,
+          }}
+        />
+      </Box>
 
-        {/* Logout Button */}
-        <Button onClick={()=>handleLogout()} size="large" style={{borderRadius: "0", paddingLeft: 30, minHeight: 45, marginTop: "auto"}} className="!flex !justify-start" icon={<FiLogOut size={20} />}>  
-        LogOut        
-        </Button>        
-        </div>
-      </Sider>
-    </ConfigProvider>
+     <List sx={{ px: open ? 2 : 0 }}>
+  {navItems && navItems?.map(({ to, label, icon }) => {
+    const isActive = location.pathname === to;
+    return (
+      <Tooltip key={to} title={!open ? label : ""} placement="right">
+        <ListItemButton
+          component={Link}
+          to={to}
+          sx={{
+            borderRadius: 1,
+            mb: 0.5,
+            color: isActive ? "#000" : "#fff", // text color
+            bgcolor: isActive ? "#fff" : "transparent", // active background
+            "&:hover": {
+              bgcolor: isActive ? "#eded " : "#eded", // hover background
+              color: isActive ? "#fff" : "#000", // hover text color
+              "& .MuiListItemIcon-root": {
+                color: "#000", // hover icon color
+              },
+            },
+            transition: "all 0.2s ease",
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              color: isActive ? "#000" : "#fff", // default icon color
+              minWidth: 40,
+              fontSize: 22,
+              transition: "color 0.2s ease",
+            }}
+          >
+            {icon}
+          </ListItemIcon>
+          {open && (
+            <ListItemText
+              primary={label}
+              primaryTypographyProps={{
+                fontSize: 15,
+                fontWeight: 500,
+              }}
+            />
+          )}
+        </ListItemButton>
+      </Tooltip>
+    );
+  })}
+</List>
+
+      {/* Toggle button */}
+      <Box
+      onClick={()=>handleLogout()}
+        sx={{
+          position: "absolute",          
+          bottom: 0,
+          width: "100%",
+          display: "flex",
+          bgcolor: "#ededed",
+          cursor: 'pointer',
+          color: '#000',
+          py:1,
+          gap: 2,
+          justifyContent: open ? "center" : "center",
+          pr: open ? 2 : 0,
+        }}
+      >
+        <span>Logout</span>
+        <LogoutIcon />
+      </Box>
+    </Drawer>
   );
 };
 

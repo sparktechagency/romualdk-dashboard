@@ -1,4 +1,13 @@
-import { ConfigProvider, Select } from "antd";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  type SelectChangeEvent,
+} from "@mui/material";
+
+import { useState } from "react";
 import {
   Area,
   AreaChart,
@@ -9,10 +18,12 @@ import {
   YAxis,
 } from "recharts";
 
-const { Option } = Select;
+const currentYear = new Date().getFullYear();
 
 const EarningCharts = () => {
   // Demo Data for Earnings (replace this with actual API data later)
+  const [selectedYear, setSelectedYear] = useState("");
+
   const demoEarningsData = [
     { month: "Jan", earnings: 12000 },
     { month: "Feb", earnings: 15000 },
@@ -33,32 +44,54 @@ const EarningCharts = () => {
 
     return (
       <div
-        className="custom-tooltip w-[120px]"
+        className="custom-tooltip "
         style={{ visibility: isVisible ? "visible" : "hidden" }}
       >
         {isVisible && (
-          <div className="w-full py-3 pl-2 text-start bg-[#8B4E2E]/80 rounded-xl">
+          <div className="w-full py-3 pl-2 text-start bg-primary/90 rounded-xl">
             <p className="text-white whitespace-nowrap font-semibold">
               {label}
             </p>
-            <p className="text-white whitespace-nowrap">{`Earnings: $${payload[0].value}`}</p>
+            <p className="text-white whitespace-nowrap">{`$${payload[0].value}`}</p>
           </div>
         )}
       </div>
     );
   };
 
-  const year = new Date().getFullYear();
+  const handleChange = (event: SelectChangeEvent) => {
+    
+    const value = event.target.value as string
+    setSelectedYear(value)
+  };
 
   return (
     <div className="">
-      <div className="bg-white p-5 rounded-xl">
-              <div className="flex items-center justify-between gap-8 mb-3">
-        <div className="">
-          <p className="font-semibold text-primary text-2xl">Earning</p>
-        </div>
+      <div className="bg-white p-5 rounded-xl shadow">
+        <div className="flex items-center justify-between gap-8 mb-3">
+          <div className="">
+            <p className="font-semibold text-primary text-2xl">Revenue</p>
+          </div>
+          <Box sx={{ minWidth: 100 }}>
+          <FormControl fullWidth>            
+            <InputLabel id="revenue" size="small">Year</InputLabel>
+            <Select
+            labelId="revenue"
+            label="Year"
+            size="small"
+            onChange={handleChange}
+            value={selectedYear || ""}
+            >
+            <MenuItem value="">None</MenuItem>
+            <MenuItem value={currentYear}>{currentYear}</MenuItem>
+            <MenuItem value={currentYear - 1}>{currentYear - 1}</MenuItem>
+            <MenuItem value={currentYear - 2}>{currentYear - 2}</MenuItem>
+            <MenuItem value={currentYear - 3}>{currentYear - 3}</MenuItem>
 
-        <ConfigProvider
+            </Select>
+          </FormControl>
+          </Box>
+          {/* <ConfigProvider
           theme={{
             components: {
               Select: {
@@ -87,8 +120,8 @@ const EarningCharts = () => {
             <Option value={year - 3}>{year - 3}</Option>
             <Option value={year - 4}>{year - 4}</Option>
           </Select>
-        </ConfigProvider>
-      </div>
+        </ConfigProvider> */}
+        </div>
         <ResponsiveContainer width="100%" height={260}>
           <AreaChart
             data={demoEarningsData}
@@ -96,8 +129,8 @@ const EarningCharts = () => {
           >
             <defs>
               <linearGradient id="earnings" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="30%" stopColor="#8B4E2E" stopOpacity={0.8} />
-                <stop offset="100%" stopColor="#8B4E2E" stopOpacity={0} />
+                <stop offset="30%" stopColor="#40CACD" stopOpacity={0.8} />
+                <stop offset="100%" stopColor="#40CACD" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis
@@ -113,7 +146,7 @@ const EarningCharts = () => {
             <Area
               type="monotone"
               dataKey="earnings"
-              stroke="#8B4E2E"
+              stroke="#0C1326"
               strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#earnings)"

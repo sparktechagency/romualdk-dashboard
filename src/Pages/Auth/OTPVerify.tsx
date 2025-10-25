@@ -1,113 +1,135 @@
-import { Button, ConfigProvider, Form, Input } from "antd";
-import { useForm } from "antd/es/form/Form";
-import type { OTPProps } from "antd/es/input/OTP";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Grid,
+  TextField,
+  Button,
+  Box,
+} from "@mui/material";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const OTPVerify = () => {
-  const [form] = useForm();
+const OTPVerify: React.FC = () => {
   const navigate = useNavigate();
+  const [otp, setOtp] = useState(["", "", "", ""]);
 
-  const handleLogin = async (values: any) => {
-    try {
-      console.log("handleLogin", values);
-      navigate("/new-password");
-    } catch (error) {
-      console.log(error);
+  const handleChange = (index: number, value: string) => {
+    if (/^\d*$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value.slice(-1); // ensure max 1 char
+      setOtp(newOtp);
+      if (value && index < 3) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        nextInput?.focus();
+      }
     }
   };
 
-  const onChange: OTPProps["onChange"] = (text) => {
-    console.log("onChange:", text);
+  const handleOTPVerify = async (e: any) => {
+    e.preventDefault();
+    const otpCode = otp.join("");
+    if (otpCode.length < 4) {
+      toast.error("Please enter the complete OTP");
+      return;
+    }
+
+    try {
+      console.log("OTP Verify Request:", otpCode);
+      toast.success("OTP Verified successfully!");
+      navigate("/new-password");
+    } catch (error: any) {
+      console.error("OTP Verify Error:", error);
+      toast.error(error?.message || "Something went wrong");
+    }
+  };
+
+  const handleResend = () => {
+    toast.success("OTP resent successfully!");
+    setOtp(["", "", "", ""]);
+    const firstInput = document.getElementById("otp-0");
+    firstInput?.focus();
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#8B4E2E", // Matching the primary color from Login page
-          colorBgContainer: "#F1F4F9", // Consistent background color
-        },
-        components: {
-          Input: {
-            borderRadius: 12,
-            colorBorder: "#8B4E2E", // Consistent border color
-            colorPrimaryBg: "#121212",
-            colorText: "#757575",
-            inputFontSize: 16,
-            colorBgBlur: "#989898",
-            colorTextPlaceholder: "#757575",
-          },
-        },
-      }}
-    >
-      <div className="flex items-center justify-center h-screen">
-        <div className="border border-borderColor rounded-xl px-12 py-8 min-w-xl">
-          <img src="/logo.png" className="w-18 mb-5 mx-auto" alt="" />
-          <h1 className="text-center text-primary text-2xl font-semibold mb-4">
-            Verify OTP
-          </h1>
-          <p className="text-center text-gray text-lg mb-8">
-            Enter your OTP which has been sent to your email
-          </p>
+    <div className="bg-bgColor min-h-[100vh] flex items-center justify-center">
+      <Container maxWidth="sm">
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          style={{ minHeight: "80vh" }}
+        >
+          <div className="bg-white rounded-lg p-6 border border-primary w-full">
+            <img src="/logo.png" alt="Logo" className="w-18 mb-5 mx-auto" />
+            <h1 className="text-center text-primary text-2xl font-semibold mb-4">
+              Verify OTP
+            </h1>
+            <p className="text-center text-gray-600 text-lg mb-8">
+              Enter the OTP sent to your email
+            </p>
 
-          <Form form={form} layout="vertical" onFinish={handleLogin}>
-            <div className=" rounded-2xl py-2.5 flex justify-center">
-              <Input.OTP
-                size="large"                                
-                length={4}
-                style={{
-                  fontWeight: 600,                                                    
-                }}
-                separator={() => (
-                  <span style={{ marginInline: 10 }}>—</span>
-                )}
-                className=""
-                onChange={onChange}
-              />
-            </div>
+            <form onSubmit={handleOTPVerify}>
+              <Box display="flex" justifyContent="center" mb={5} gap={2}>
+                {otp.map((digit, index) => (
+                  <TextField
+                    key={index}
+                    id={`otp-${index}`}
+                    value={digit}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                    inputProps={{
+                      maxLength: 1,
+                      style: { textAlign: "center", fontWeight: 600 },
+                    }}
+                    sx={{ width: 60, height: 60 }}
+                    variant="outlined"
+                  />
+                ))}
+              </Box>
 
-            <div className="text-center my-5">
-              <p className="text-center text-gray text-lg mb-2">
-                A code has been sent to your email
-              </p>
-              <span className="text-[#FF6F61] text-xl font-semibold">00:00</span>
-            </div>
+              <div className="text-center mb-5">
+                <p className="text-gray-600 mb-2">
+                  A code has been sent to your email
+                </p>
+                <span className="text-[#FF6F61] text-xl font-semibold">
+                  00:00
+                </span>
+              </div>
 
-            {/* Separate buttons for Verify and Resend */}
-            <div className="">
               <Button
-                type="primary"
-                size="large"
-                htmlType="submit"
-                style={{
-                  width: "100%",
+                type="submit"
+                fullWidth
+                variant="contained"
+                className="!bg-primary"
+                sx={{
                   height: 50,
-                  borderRadius: 20,                                    
-                  marginTop: 20,
+                  borderRadius: "20px",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  fontSize: "16px",
+                  mb: 1.5,
                 }}
               >
                 Verify
               </Button>
 
               <Button
-                size="large"
-                type="text"
-                style={{
-                  color: "#FF6F61", // Custom color for "Resend" button
+                fullWidth
+                variant="text"
+                onClick={handleResend}
+                sx={{
+                  color: "#FF6F61",
                   fontWeight: 600,
-                  width: "100%",
-                  marginTop: 10,
-                  border: "none",
-                  background: "transparent"
+                  textTransform: "none",
+                  fontSize: "16px",
                 }}
               >
                 Resend
               </Button>
-            </div>
-          </Form>
-        </div>
-      </div>
-    </ConfigProvider>
+            </form>
+          </div>
+        </Grid>
+      </Container>
+    </div>
   );
 };
 
