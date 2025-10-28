@@ -14,16 +14,18 @@ import { CiWifiOn } from "react-icons/ci";
 import { TbAirConditioning, TbCat } from "react-icons/tb";
 import { LuMonitor } from "react-icons/lu";
 import { AiOutlineSecurityScan } from "react-icons/ai";
+import { itemData } from "../CarManage/CarManage";
 
 type props = {
   open: boolean;
   setOpen: any;
 };
 
-const HostDetails = ({ open, setOpen }: props) => {
-  console.log("open", open);
 
-  const lastItem = itemData?.pop();
+
+const HostRequestDetails = () => {
+
+  const lastItem = itemData[itemData?.length - 1];
 
   const featuresData = {
     carId: "Yes",
@@ -49,6 +51,7 @@ const HostDetails = ({ open, setOpen }: props) => {
       { icon: <AiOutlineSecurityScan />, name: "Security" },
     ],
   };
+  console.log('itemData', itemData)
   return (
     <div className="bg-white shadow p-5">
       <div className="flex items-center justify-between mb-5  !h-full">
@@ -86,7 +89,7 @@ const HostDetails = ({ open, setOpen }: props) => {
             </ImageListItem>
           ))}
 
-        <ImageListItem sx={{ position: "relative" }}>
+       {itemData?.length > 3 && <ImageListItem sx={{ position: "relative" }}>
           <img
             srcSet={`${lastItem?.img}?w=400&fit=crop&auto=format&dpr=2 2x`}
             src={`${lastItem?.img}?w=400&fit=crop&auto=format`}
@@ -98,7 +101,7 @@ const HostDetails = ({ open, setOpen }: props) => {
           <div className="absolute top-0 left-0 w-full h-full bg-black/70 flex items-center justify-center text-3xl text-white rounded-3xl">
             {itemData?.length - 3}+
           </div>
-        </ImageListItem>
+        </ImageListItem>}
       </ImageList>
 
       <div className="flex items-center justify-between py-5">
@@ -254,81 +257,18 @@ const HostDetails = ({ open, setOpen }: props) => {
         <p>Download</p>
       </div>
       </div>
+
+      <div className="flex items-end justify-center flex-col">
+        <h1 className="text-lg font-semibold mb-5">Do You  want to accept the request?</h1>
+        <div className="flex gap-3 items-center justify-between max-w-[250px]">
+            <Button variant="contained" color="error" size="medium" sx={{width: '100%'}}>Reject</Button>
+            <Button variant="contained" color="success" size="medium" sx={{width: '100%'}}>Accept</Button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default HostDetails;
+export default HostRequestDetails;
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
 
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    title: "Breakfast",
-    author: "@bkristastucchio",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    title: "Burger",
-    author: "@rollelflex_graphy726",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    title: "Camera",
-    author: "@helloimnik",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-    title: "Coffee",
-    author: "@nolanissac",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-    title: "Hats",
-    author: "@hjrc33",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-    title: "Honey",
-    author: "@arwinneil",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-    title: "Basketball",
-    author: "@tjdragotta",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-    title: "Fern",
-    author: "@katie_wasserman",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-    title: "Mushrooms",
-    author: "@silverdalex",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-    title: "Tomato basil",
-    author: "@shelleypauls",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-    title: "Sea star",
-    author: "@peterlaster",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-    title: "Bike",
-    author: "@southside_customs",
-  },
-];

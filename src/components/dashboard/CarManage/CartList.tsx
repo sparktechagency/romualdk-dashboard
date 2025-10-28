@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
+import { styled, TablePagination } from "@mui/material";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { styled, TablePagination } from "@mui/material";
 
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
@@ -21,9 +21,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.common.white,
     fontWeight: 500,
     fontSize: 18,
+    textAlign: 'start'
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 16,
+    fontSize: 16,    
   },
 }));
 
@@ -159,6 +160,9 @@ const HostsList = ({open, setOpen}: props) => {
   const [currentPage, setCurrentPage] = useState(1);  
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  
+
+
   const handleChangePage = (event: unknown, newPage: number)=>{
       setCurrentPage(newPage)
   }
@@ -168,6 +172,7 @@ const HostsList = ({open, setOpen}: props) => {
     setCurrentPage(0);
   };
   
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}  aria-label="simple table">
