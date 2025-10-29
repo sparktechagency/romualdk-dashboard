@@ -1,6 +1,5 @@
 import { Button, styled, type ButtonProps } from "@mui/material";
 import { purple } from "@mui/material/colors";
-import React from "react";
 import { CiLocationOn } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
 

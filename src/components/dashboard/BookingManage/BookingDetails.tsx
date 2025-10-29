@@ -13,7 +13,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import CarCard from "../GuestsManage/CarCard";
 
 const BookingDetails = () => {
   return (
@@ -233,50 +232,4 @@ const BookingDetails = () => {
 
 export default BookingDetails;
 
-const carsData = [
-  {
-    image: "https://images.unsplash.com/photo-1493238792000-8113da705763",
-    brand: "Mercedes Benz",
-    area: "Banasree, Dhaka",
-    rent: 100,
-    rentWise: "Daily",
-    rating: 4.5,
-    status: "Complete",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1493238792000-8113da705763",
-    brand: "Toyota Corolla",
-    area: "Uttara, Dhaka",
-    rent: 80,
-    rentWise: "Daily",
-    rating: 4.3,
-    status: "Pending",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1493238792000-8113da705763",
-    brand: "BMW X5",
-    area: "Mirpur, Dhaka",
-    rent: 120,
-    rentWise: "Daily",
-    rating: 4.7,
-    status: "Complete",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1493238792000-8113da705763",
-    brand: "Audi A6",
-    area: "Bashundhara, Dhaka",
-    rent: 110,
-    rentWise: "Daily",
-    rating: 4.6,
-    status: "In Progress",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1493238792000-8113da705763",
-    brand: "Honda Civic",
-    area: "Dhanmondi, Dhaka",
-    rent: 70,
-    rentWise: "Daily",
-    rating: 4.4,
-    status: "Complete",
-  },
-];
+

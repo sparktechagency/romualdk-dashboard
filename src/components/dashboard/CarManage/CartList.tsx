@@ -164,6 +164,8 @@ const HostsList = ({open, setOpen}: props) => {
 
 
   const handleChangePage = (event: unknown, newPage: number)=>{
+    console.log("event", event);
+    
       setCurrentPage(newPage)
   }
 

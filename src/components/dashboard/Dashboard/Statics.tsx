@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-const Statics = ({ users }: any) => {
+const Statics = () => {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-x-10 justify-between">
       <Box

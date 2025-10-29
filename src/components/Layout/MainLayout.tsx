@@ -5,12 +5,12 @@ import Sidebar from "./Sidebar";
 import React from "react";
 
 const MainLayout: React.FC = () => {
-  const [open, setOpen] = React.useState(true); // control sidebar open/close
+  
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar open={open} />
+      <Sidebar />
 
       {/* Main content */}
       <Box
@@ -18,7 +18,7 @@ const MainLayout: React.FC = () => {
         sx={{
           flexGrow: 1, // takes remaining width
           transition: "margin-left 0.3s ease",
-          marginLeft: open ? "10px" : "72px", // match your sidebar width
+          marginLeft: "10px", // match your sidebar width
           display: "flex",
           flexDirection: "column",
           background: '#f6fffe'

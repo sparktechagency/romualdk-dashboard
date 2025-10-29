@@ -172,6 +172,8 @@ const Verification = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleChangePage = (event: unknown, newPage: number) => {
+    console.log("event", event);
+    
     setCurrentPage(newPage);
   };
 
@@ -279,8 +281,7 @@ const Verification = () => {
               <TableCell align="left">
                 {" "}
                 <RemoveRedEyeOutlinedIcon
-                  className="cursor-pointer"
-                  onClick={() => setOpen(!open)}
+                  className="cursor-pointer"                  
                   fontSize="medium"
                 />{" "}
               </TableCell>

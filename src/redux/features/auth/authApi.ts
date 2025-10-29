@@ -33,7 +33,7 @@ const authApi = baseApi.injectEndpoints({
       query: () => ({
         url: "/users/profile",
       }),
-      transformResponse: (res: { data: UserType }) => res?.data,
+      transformResponse: (res: { data: any }) => res?.data,
     }),
     changePassword: build.mutation({
       query: (data) => ({

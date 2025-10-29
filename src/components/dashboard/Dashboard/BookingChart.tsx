@@ -9,11 +9,10 @@ import {
 import { useState } from "react";
 import {
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
-  Tooltip,
+  Tooltip
 } from "recharts";
 
 const currentYear = new Date().getFullYear();

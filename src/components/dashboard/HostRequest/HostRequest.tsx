@@ -1,15 +1,15 @@
-import { Button, InputAdornment, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { Button, InputAdornment, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import SharedModal from "../../shared/SharedModal";
-import HostRequestList from "./HostRequestList";
 import HostRequestDetails from "./HostRequestDetails";
 import HostRequestForm from "./HostRequestForm";
+import HostRequestList from "./HostRequestList";
 
 
 const HostRequest = () => {
@@ -74,7 +74,7 @@ setSearchText(searchTerm)
       </div> 
       :
       <div className="">
-        <HostRequestDetails open={open} setOpen={setOpen}/>
+        <HostRequestDetails />
       </div>}
       <SharedModal width={700} height={800} title="Add Car" open={openForm} handleClose={()=>setOpenForm(!openForm)}>
         <HostRequestForm />

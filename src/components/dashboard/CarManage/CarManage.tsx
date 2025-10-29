@@ -1,14 +1,14 @@
-import { Button, InputAdornment, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { FaSearch } from "react-icons/fa";
-import CartList from "./CartList";
-import CarDetails from "./CarDetails";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { Button, InputAdornment, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import SharedModal from "../../shared/SharedModal";
 import CarAddForm from "./CarAddForm";
+import CarDetails from "./CarDetails";
+import CartList from "./CartList";
 
 const CarManage = () => {
     const [open, setOpen] = useState(false);
@@ -72,7 +72,7 @@ setSearchText(searchTerm)
       </div> 
       :
       <div className="">
-        <CarDetails open={open} setOpen={setOpen} items={itemData}/>
+        <CarDetails items={itemData}/>
       </div>}
       <SharedModal width={700} height={800} title="Add Car" open={openForm} handleClose={()=>setOpenForm(!openForm)}>
         <CarAddForm />

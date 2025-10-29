@@ -1,19 +1,15 @@
 import {
   Avatar,
-  AvatarGroup,
   Button,
   ImageList,
   ImageListItem,
-  ImageListItemBar,
-  Table,
+  Table
 } from "@mui/material";
-import React from "react";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { IoGiftOutline } from "react-icons/io5";
-import { CiWifiOn } from "react-icons/ci";
-import { TbAirConditioning, TbCat } from "react-icons/tb";
-import { LuMonitor } from "react-icons/lu";
 import { AiOutlineSecurityScan } from "react-icons/ai";
+import { CiWifiOn } from "react-icons/ci";
+import { IoGiftOutline } from "react-icons/io5";
+import { LuMonitor } from "react-icons/lu";
+import { TbAirConditioning, TbCat } from "react-icons/tb";
 
 type props = {  
   items: any
@@ -260,14 +256,5 @@ const CarDetails = ({  items }: props) => {
 
 export default CarDetails;
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
 
 

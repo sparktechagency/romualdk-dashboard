@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import {
-  Avatar,
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  Grid,
-  styled,
-} from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {
+  Button,
+  Grid,
+  IconButton,
+  styled,
+  TextField,
+  Typography
+} from "@mui/material";
+import React, { useState } from "react";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -73,7 +72,7 @@ const CarAddForm = () => {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           {/* Two-column fields */}
-          <Grid item size={6}>
+          <Grid size={6} >
             <TextField
               name="carName"
               label="Car Name"
@@ -84,7 +83,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid  size={6}>
             <TextField
               name="price"
               label="Price (e.g. $250/PW)"
@@ -95,7 +94,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid size={6}>
             <TextField
               name="location"
               label="Location"
@@ -106,7 +105,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid  size={6}>
             <TextField
               name="carType"
               label="Car Type"
@@ -117,7 +116,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid  size={6}>
             <TextField
               name="seats"
               label="Seats"
@@ -128,7 +127,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid  size={6}>
             <TextField
               name="transmission"
               label="Transmission"
@@ -139,7 +138,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid  size={6}>
             <TextField
               name="fuelType"
               label="Fuel Type"
@@ -150,7 +149,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} size={6}>
+          <Grid  size={6}>
             <TextField
               name="mileage"
               label="Mileage"
@@ -162,7 +161,7 @@ const CarAddForm = () => {
           </Grid>
 
           {/* Full-row Description */}
-          <Grid item xs={12} size={12}>
+          <Grid  size={12}>
             <TextField
               name="description"
               label="Description"
@@ -175,7 +174,7 @@ const CarAddForm = () => {
           </Grid>
 
           {/* Full-row Image Upload */}
-          <Grid item xs={12} size={12}>
+          <Grid size={12}>
             <Typography variant="h6" className="mb-2 font-semibold">
               Upload Images
             </Typography>
@@ -231,6 +230,7 @@ const CarAddForm = () => {
     onChange={(event) => {
       if (event.target.files) {
         const newFiles = Array.from(event.target.files);
+        // @ts-ignore
         setFiles((prev: File[]) => [...prev, ...newFiles]);        
       }
     }}

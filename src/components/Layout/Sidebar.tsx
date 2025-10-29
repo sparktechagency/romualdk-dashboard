@@ -1,59 +1,48 @@
-import React, { useState } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
 import {
+  Box,
+  Divider,
   Drawer,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Box,
-  IconButton,
   Tooltip,
 } from "@mui/material";
-
 import { Link, useLocation } from "react-router-dom";
-import LogoutIcon from '@mui/icons-material/Logout';
 import { navItems } from "./SidebarItems";
 
-
-
-const Sidebar = ({open}: {open: boolean}) => {
-  
+const Sidebar = () => {
   const location = useLocation();
 
-  const handleLogout = ()=>{
-    alert('logout func')
-  }
+  const handleLogout = () => {
+    alert("logout func");
+  };
+
   return (
     <Drawer
-    className="relative"  
-    variant="permanent"
-      sx={{        
-        width: open ? 260 : 80,
+      className="relative"
+      variant="permanent"
+      sx={{
+        width: 260,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
-          width: open ? 260 : 80,
+          width: 260,
           boxSizing: "border-box",
           backgroundColor: "#131927",
           color: "#fff",
-          transition: "width 0.3s ease",
-          borderRight: "none",          
+          borderRight: "none",
         },
       }}
     >
-      <Box className="flex flex-col items-center py-4 ">
+      <Box className="flex flex-col items-center py-4">
         <Link to="/">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className={`${
-              open ? "w-36 " : "w-8 h-8"
-            } object-cover transition-all`}
-          />
+          <img src="/logo.png" alt="Logo" className="w-36 object-cover" />
         </Link>
+
         <Divider
           sx={{
-            width: open ? "200px" : "32px",
+            width: "200px",
             mt: 1,
             mb: 2,
             alignSelf: "center",
@@ -66,69 +55,68 @@ const Sidebar = ({open}: {open: boolean}) => {
         />
       </Box>
 
-     <List sx={{ px: open ? 2 : 0 }}>
-  {navItems && navItems?.map(({ to, label, icon }) => {
-    const isActive = location.pathname === to;
-    return (
-      <Tooltip key={to} title={!open ? label : ""} placement="right">
-        <ListItemButton
-          component={Link}
-          to={to}
-          sx={{
-            borderRadius: 1,
-            mb: 0.5,
-            color: isActive ? "#000" : "#fff", // text color
-            bgcolor: isActive ? "#fff" : "transparent", // active background
-            "&:hover": {
-              bgcolor: isActive ? "#eded " : "#eded", // hover background
-              color: isActive ? "#fff" : "#000", // hover text color
-              "& .MuiListItemIcon-root": {
-                color: "#000", // hover icon color
-              },
-            },
-            transition: "all 0.2s ease",
-          }}
-        >
-          <ListItemIcon
-            sx={{
-              color: isActive ? "#000" : "#fff", // default icon color
-              minWidth: 40,
-              fontSize: 22,
-              transition: "color 0.2s ease",
-            }}
-          >
-            {icon}
-          </ListItemIcon>
-          {open && (
-            <ListItemText
-              primary={label}
-              primaryTypographyProps={{
-                fontSize: 15,
-                fontWeight: 500,
-              }}
-            />
-          )}
-        </ListItemButton>
-      </Tooltip>
-    );
-  })}
-</List>
+      <List sx={{ px: 2 }}>
+        {navItems.map(({ to, label, icon }) => {
+          const isActive = location.pathname === to;
+          return (
+            <Tooltip key={to} title="" placement="right">
+              <ListItemButton
+                component={Link}
+                to={to}
+                sx={{
+                  borderRadius: 1,
+                  mb: 0.5,
+                  color: isActive ? "#000" : "#fff",
+                  bgcolor: isActive ? "#fff" : "transparent",
+                  "&:hover": {
+                    bgcolor: "#eded",
+                    color: "#000",
+                    "& .MuiListItemIcon-root": {
+                      color: "#000",
+                    },
+                  },
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: isActive ? "#000" : "#fff",
+                    minWidth: 40,
+                    fontSize: 22,
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  {icon}
+                </ListItemIcon>
 
-      {/* Toggle button */}
+                <ListItemText
+                  primary={label}
+                  primaryTypographyProps={{
+                    fontSize: 15,
+                    fontWeight: 500,
+                  }}
+                />
+              </ListItemButton>
+            </Tooltip>
+          );
+        })}
+      </List>
+
+      {/* Logout */}
       <Box
-      onClick={()=>handleLogout()}
+        onClick={handleLogout}
         sx={{
-          position: "absolute",          
+          position: "absolute",
           bottom: 0,
           width: "100%",
           display: "flex",
           bgcolor: "#ededed",
-          cursor: 'pointer',
-          color: '#000',
-          py:1,
-          gap: 2,
-          justifyContent: open ? "center" : "center",
-          pr: open ? 2 : 0,
+          cursor: "pointer",
+          color: "#000",
+          py: 1,
+          gap: 1,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <span>Logout</span>

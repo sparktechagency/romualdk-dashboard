@@ -1,19 +1,16 @@
 import { Grid } from '@mui/material'
-import { useGetAnalyticsQuery } from '../../../redux/features/dashboard/dashboardApi'
+import BookingChart from './BookingChart'
 import EarningCharts from './EarningCharts'
 import Statics from './Statics'
 import TotalUserChart from './TotalUserChart'
-import BookingChart from './BookingChart'
 
 export const Dashboard = () => {
-  const {data: analytics} = useGetAnalyticsQuery(undefined)
-  
-  console.log("analytics", analytics);
+
   
   return (
     <div>
-      <Statics users={analytics?.users} />
-        <TotalUserChart userGrowth={analytics?.userGrowth}/>
+      <Statics />
+        <TotalUserChart />
       <Grid container spacing={2}>
         <Grid size={8}>
         <EarningCharts />

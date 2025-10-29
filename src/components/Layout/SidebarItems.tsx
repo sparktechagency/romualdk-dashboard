@@ -1,9 +1,8 @@
-import { MdOutlineDashboard } from "react-icons/md";
-import { IoSettingsOutline, IoDiamondOutline } from "react-icons/io5";
-import { FaStore, FaRegUser, FaRegCalendar } from "react-icons/fa";
-import { LuNotepadText, LuBookText } from "react-icons/lu";
+import { FaRegCalendar, FaRegUser, FaStore } from "react-icons/fa";
 import { HiOutlinePresentationChartLine } from "react-icons/hi";
-import { TbMessageReport } from "react-icons/tb";
+import { IoDiamondOutline, IoSettingsOutline } from "react-icons/io5";
+import { LuNotepadText } from "react-icons/lu";
+import { MdOutlineDashboard } from "react-icons/md";
 
 interface NavItem {
   to: string;

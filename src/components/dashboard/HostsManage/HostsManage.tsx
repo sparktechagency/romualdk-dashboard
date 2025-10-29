@@ -1,11 +1,11 @@
-import { Button, InputAdornment, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { Button, InputAdornment, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import HostDetails from "./HostDetails";
 import HostsList from "./HostsList";
 
@@ -13,8 +13,7 @@ import HostsList from "./HostsList";
 
 
 const HostsManage = () => {
-    const [open, setOpen] = useState(false);
-    const [openForm, setOpenForm] = useState(false);
+    const [open, setOpen] = useState(false);    
   const [searchText, setSearchText] = useState("");
 
   const updateSearchParams = useUpdateSearchParams();
@@ -37,8 +36,7 @@ setSearchText(searchTerm)
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-3xl text-primary font-semibold">Property List</h1>
         <div className="flex gap-5">
-          <Button
-            onClick={()=>setOpenForm(true)}
+          <Button            
             variant="contained"
             startIcon={<AddOutlinedIcon fontSize="medium" />}
             sx={{ background: "var(--color-black)" }}

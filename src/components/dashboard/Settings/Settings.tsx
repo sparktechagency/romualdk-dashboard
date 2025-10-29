@@ -1,25 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
   Box,
-  Typography,
   List,
   ListItemButton,
-  ListItemText,
   ListItemIcon,
-  Divider,
+  ListItemText,
+  Typography
 } from "@mui/material";
-import PersonalInformation from "./PersonalInformation";
-import { ChangePassword } from "./ChangePassword";
-import TermsCondition from "./TermsCondition";
+import React, { useState } from "react";
 import About from "./About";
+import { ChangePassword } from "./ChangePassword";
 import FAQ from "./FAQ";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import PersonalInformation from "./PersonalInformation";
+import TermsCondition from "./TermsCondition";
 
 // --- Placeholder for react-icons/lucide-react, using inline SVG instead ---
 // Icon component for the list items
-const ChevronRightIcon = (props) => (
+const ChevronRightIcon = (props:any) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"

@@ -36,11 +36,7 @@ const userGrowthData: TUserGrowth[] = [
   { month: "Dec", guest: 2200, hosts: 2000 },
 ];
 
-const TotalUserChart = ({
-  userGrowth = userGrowthData,
-}: {
-  userGrowth: TUserGrowth[];
-}) => {
+const TotalUserChart = () => {
   const [age, setAge] = useState("")
 
   const CustomTooltip = ({ active, payload }: any) => {

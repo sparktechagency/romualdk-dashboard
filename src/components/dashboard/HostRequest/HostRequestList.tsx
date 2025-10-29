@@ -175,6 +175,8 @@ const HostRequestList = ({ open, setOpen }: props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleChangePage = (event: unknown, newPage: number) => {
+    console.log("event", event);
+    
     setCurrentPage(newPage);
   };
 

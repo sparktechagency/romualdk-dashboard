@@ -1,25 +1,18 @@
 import {
   Avatar,
-  AvatarGroup,
   Button,
   ImageList,
   ImageListItem,
-  ImageListItemBar,
-  Table,
+  Table
 } from "@mui/material";
-import React from "react";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { IoGiftOutline } from "react-icons/io5";
-import { CiWifiOn } from "react-icons/ci";
-import { TbAirConditioning, TbCat } from "react-icons/tb";
-import { LuMonitor } from "react-icons/lu";
 import { AiOutlineSecurityScan } from "react-icons/ai";
+import { CiWifiOn } from "react-icons/ci";
+import { IoGiftOutline } from "react-icons/io5";
+import { LuMonitor } from "react-icons/lu";
+import { TbAirConditioning, TbCat } from "react-icons/tb";
 import { itemData } from "../CarManage/CarManage";
 
-type props = {
-  open: boolean;
-  setOpen: any;
-};
+
 
 
 

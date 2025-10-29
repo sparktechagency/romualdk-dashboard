@@ -1,14 +1,7 @@
 import {
   Avatar,
-  Grid,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
+  Grid
 } from "@mui/material";
-import React from "react";
 import CarCard from "../GuestsManage/CarCard";
 
 const HostDetails = () => {
