@@ -10,7 +10,6 @@ import { Dashboard } from "../dashboard/Dashboard/Dashboard";
 
 import BookingManage from "../dashboard/BookingManage/BookingManage";
 import CarManage from "../dashboard/CarManage/CarManage";
-import GuestRequest from "../dashboard/GuestRequest/GuestRequest";
 import GuestsManage from "../dashboard/GuestsManage/GuestsManage";
 import HostRequest from "../dashboard/HostRequest/HostRequest";
 import HostsManage from "../dashboard/HostsManage/HostsManage";
@@ -26,13 +25,14 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                path: "dashboard",
-                element: <Dashboard />
-            },
-            {
                 path: "",
                 element: <Dashboard />
             },
+            {
+                path: "dashboard",
+                element: <Dashboard />
+            },
+            
             {
                 path: "cars-manage",
                 element: <CarManage />
@@ -40,11 +40,7 @@ const router = createBrowserRouter([
             {
                 path: "hosts-request",
                 element: <HostRequest />
-            },
-            {
-                path: "guests-request",
-                element: <GuestRequest />
-            },
+            },           
             {
                 path: "hosts-manage",
                 element: <HostsManage />

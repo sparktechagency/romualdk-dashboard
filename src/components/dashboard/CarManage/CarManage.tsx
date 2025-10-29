@@ -74,7 +74,7 @@ setSearchText(searchTerm)
       <div className="">
         <CarDetails items={itemData}/>
       </div>}
-      <SharedModal width={700} height={800} title="Add Car" open={openForm} handleClose={()=>setOpenForm(!openForm)}>
+      <SharedModal width={700} height={1000} title="Add Car" open={openForm} handleClose={()=>setOpenForm(!openForm)}>
         <CarAddForm />
       </SharedModal>
     </div>

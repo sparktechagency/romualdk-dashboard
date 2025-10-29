@@ -9,14 +9,15 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { navItems } from "./SidebarItems";
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    alert("logout func");
+    navigate("/login")
   };
 
   return (

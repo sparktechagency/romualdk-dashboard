@@ -28,13 +28,14 @@ const SharedModal: React.FC<SharedModalProps> = ({
       <Box
         sx={{
           width,
-          height: height || "auto",
+          height: height,
+          maxHeight: '85vh',
           bgcolor: "background.paper",
           borderRadius: 3,
           boxShadow: 24,
           p: 3,
           position: "relative",
-          overflow: 'auto'
+          overflowY: 'auto'
         }}
       >
         {/* Header */}

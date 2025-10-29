@@ -1,5 +1,4 @@
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { Button, InputAdornment, TextField } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
@@ -35,13 +34,7 @@ setSearchText(searchTerm)
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-3xl text-primary font-semibold">Property List</h1>
         <div className="flex gap-5">
-          <Button            
-            variant="contained"
-            startIcon={<AddOutlinedIcon fontSize="medium" />}
-            sx={{ background: "var(--color-black)" }}
-          >
-            Add More
-          </Button>
+
 
           <TextField
             placeholder="Search by name, email or service..."

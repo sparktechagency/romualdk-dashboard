@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Button, styled, TablePagination } from "@mui/material";
+import { Box, Button, InputAdornment, styled, TablePagination, TextField } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,6 +10,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import { getSearchParams } from "../../../utils/getSearchParams";
+import { FaSearch } from "react-icons/fa";
 
 const imageURL =
   "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg";
@@ -171,6 +174,22 @@ const Verification = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+   const [searchText, setSearchText] = useState("");
+  
+    const updateSearchParams = useUpdateSearchParams();
+    const {searchTerm} = getSearchParams();
+    
+    
+    useEffect(()=>{
+  setSearchText(searchTerm)
+    },[searchTerm]);
+  
+    const handleSearch = (e: any) => {
+      const search = e.target.value;
+      setSearchText(search);
+      updateSearchParams({searchTerm: search})
+    };
+
   const handleChangePage = (event: unknown, newPage: number) => {
     console.log("event", event);
     
@@ -185,6 +204,34 @@ const Verification = () => {
   };
 
   return (
+    <Box>
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-3xl text-primary font-semibold">Property List</h1>
+        <div className="flex gap-5">
+
+
+          <TextField
+            placeholder="Search by name, email or service..."
+            value={searchText}
+            onChange={handleSearch}
+            style={{ width: "325px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FaSearch />
+                </InputAdornment>
+              ),
+              style: {
+                borderRadius: "16px",
+                //   @ts-ignore
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#1976d2",
+                },
+              },
+            }}
+          />
+        </div>
+      </div>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -299,6 +346,7 @@ const Verification = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </TableContainer>
+    </Box>
   );
 };
 

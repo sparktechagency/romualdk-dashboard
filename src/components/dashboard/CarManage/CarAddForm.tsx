@@ -1,27 +1,26 @@
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   Button,
   Grid,
   IconButton,
   styled,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
-
 
 const CarAddForm = () => {
   const [images, setImages] = useState<File[]>([]);
@@ -36,7 +35,8 @@ const CarAddForm = () => {
     mileage: "",
     description: "",
   });
-  const [files, setFiles] = useState([])
+  const [files, setFiles] = useState([]);
+
 
   // Handle input changes
   const handleChange = (
@@ -56,6 +56,7 @@ const CarAddForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log(files)
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) =>
       payload.append(key, value)
@@ -65,14 +66,13 @@ const CarAddForm = () => {
     console.log("🚗 Car Add FormData:", Object.fromEntries(payload));
   };
 
-  console.log('sdasdf', files)
-  return (
+    return (
     <div className="p-6 rounded-xl">
       {/* Form Fields */}
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           {/* Two-column fields */}
-          <Grid size={6} >
+          <Grid size={6}>
             <TextField
               name="carName"
               label="Car Name"
@@ -83,7 +83,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid  size={6}>
+          <Grid size={6}>
             <TextField
               name="price"
               label="Price (e.g. $250/PW)"
@@ -105,7 +105,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid  size={6}>
+          <Grid size={6}>
             <TextField
               name="carType"
               label="Car Type"
@@ -116,7 +116,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid  size={6}>
+          <Grid size={6}>
             <TextField
               name="seats"
               label="Seats"
@@ -127,7 +127,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid  size={6}>
+          <Grid size={6}>
             <TextField
               name="transmission"
               label="Transmission"
@@ -138,7 +138,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid  size={6}>
+          <Grid size={6}>
             <TextField
               name="fuelType"
               label="Fuel Type"
@@ -149,7 +149,7 @@ const CarAddForm = () => {
             />
           </Grid>
 
-          <Grid  size={6}>
+          <Grid size={6}>
             <TextField
               name="mileage"
               label="Mileage"
@@ -161,7 +161,7 @@ const CarAddForm = () => {
           </Grid>
 
           {/* Full-row Description */}
-          <Grid  size={12}>
+          <Grid size={12}>
             <TextField
               name="description"
               label="Description"
@@ -215,27 +215,27 @@ const CarAddForm = () => {
           </Grid>
 
           <Grid size={12}>
-           <Button
-  component="label"
-  role={undefined}
-  variant="outlined"
-  tabIndex={-1}
-  startIcon={<CloudUploadIcon />}
-  className="block w-full"
->
-  Upload files
-  <VisuallyHiddenInput
-    type="file"
-    multiple
-    onChange={(event) => {
-      if (event.target.files) {
-        const newFiles = Array.from(event.target.files);
-        // @ts-ignore
-        setFiles((prev: File[]) => [...prev, ...newFiles]);        
-      }
-    }}
-  />
-</Button>
+            <Button
+              component="label"
+              role={undefined}
+              variant="outlined"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              className="block w-full"
+            >
+              Upload files
+              <VisuallyHiddenInput
+                type="file"
+                multiple
+                onChange={(event) => {
+                  if (event.target.files) {
+                    const newFiles = Array.from(event.target.files);
+                    // @ts-ignore
+                    setFiles((prev: File[]) => [...prev, ...newFiles]);
+                  }
+                }}
+              />
+            </Button>
           </Grid>
           {/* Submit Button */}
           <Grid size={12}>
