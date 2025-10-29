@@ -35,7 +35,7 @@ const NewPassword: React.FC = () => {
     try {
       console.log("New Password Request:", values);
       toast.success("Password updated successfully!");
-      navigate("/signin"); // Redirect to SignIn page
+      navigate("/"); // Redirect to SignIn page
     } catch (error: any) {
       console.error("New Password Error:", error);
       toast.error(error?.message || "Something went wrong");

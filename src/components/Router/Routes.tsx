@@ -15,7 +15,8 @@ import GuestsManage from "../dashboard/GuestsManage/GuestsManage";
 import HostRequest from "../dashboard/HostRequest/HostRequest";
 import HostsManage from "../dashboard/HostsManage/HostsManage";
 import Payments from "../dashboard/Payments/Payments";
-import Setting from "../dashboard/Setting";
+import Settings from "../dashboard/Settings/Settings";
+import Verification from "../dashboard/Verification/Verification";
 
 const router = createBrowserRouter([
     {
@@ -55,19 +56,19 @@ const router = createBrowserRouter([
             {
                 path: "booking-manage",
                 element: <BookingManage />
-            },
-            {
-                path: "verification",
-                element: <BookingManage />
-            },
+            },           
             {
                 path: "payments",
                 element: <Payments />
             },
+            {
+                path: "verification",
+                element: <Verification />
+            },
          
             {
-                path: "setting",
-                element: <Setting />
+                path: "settings",
+                element: <Settings />
             },
             // {
             //     path: "all-admin",

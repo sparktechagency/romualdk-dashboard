@@ -149,11 +149,8 @@ const BookingDetails = () => {
                   </TableCell>
                 </TableRow>
               </TableHead>
-
               <TableBody>
-                {/* Data row */}
                 <TableRow>
-                  {/* This will span down 3 summary rows */}
                   <TableCell>1</TableCell>
                   <TableCell>
                     <div
@@ -169,7 +166,7 @@ const BookingDetails = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <div>
+                      <div className="">
                         <Typography variant="h5" sx={{ fontWeight: 500 }}>
                           Nissan Leaf
                         </Typography>
@@ -190,37 +187,34 @@ const BookingDetails = () => {
                   <TableCell>$15115.00</TableCell>
                 </TableRow>
 
-                {/* Summary rows */}
-                <TableRow style={{height: '10px'}}>
-                  <TableCell rowSpan={7} />
-                  <TableCell rowSpan={7} />
-                  <TableCell colSpan={2}>Trip Fare</TableCell>
-                  <TableCell >5315.00</TableCell>
+                {/* Summary  */}
+                {/* <TableRow>  
+                    <TableCell rowSpan={3}/>
+                    <TableCell >Subtotal</TableCell>
+                    <TableCell >1234</TableCell>
+                </TableRow>
+                <TableRow>                    
+                    <TableCell >Tax</TableCell>
+                    <TableCell >10%</TableCell>
                 </TableRow>
 
-                <TableRow style={{height: '10px'}}>
-                  <TableCell colSpan={2} sx={{fontWeight: 600}}>Subtotal</TableCell>
-                  <TableCell >1500.00</TableCell>
+                <TableRow>                    
+                    <TableCell >Total</TableCell>
+                    <TableCell >1450</TableCell>
+                </TableRow> */}
+                <TableRow>
+                  <TableCell rowSpan={3} />
+                  <TableCell colSpan={2}>Subtotal</TableCell>
+                  <TableCell align="right">aa</TableCell>
                 </TableRow>
-                <TableRow style={{height: '10px'}}>
-                  <TableCell colSpan={2}>Discount</TableCell>
-                  <TableCell >-$0.00</TableCell>
+                <TableRow>
+                  <TableCell>Tax</TableCell>
+                  <TableCell align="right">adsa</TableCell>
+                  <TableCell align="right">aa</TableCell>
                 </TableRow>
-                <TableRow style={{height: '10px'}}>
-                  <TableCell colSpan={2}>Coupon Discount</TableCell>
-                  <TableCell >-$0.00</TableCell>
-                </TableRow>
-                <TableRow style={{height: '10px'}}>
-                  <TableCell colSpan={2}>VAT/TAX</TableCell>
-                  <TableCell >-$0.00</TableCell>
-                </TableRow>
-                <TableRow style={{height: '10px'}}>
-                  <TableCell colSpan={2}>Additional Charge</TableCell>
-                  <TableCell >-$0.00</TableCell>
-                </TableRow>
-                <TableRow style={{height: '10px'}}>
-                  <TableCell colSpan={2} sx={{fontWeight: 600}}>Total</TableCell>
-                  <TableCell sx={{fontWeight: 600}}>-$0.00</TableCell>
+                <TableRow>
+                  <TableCell colSpan={2}>Total</TableCell>
+                  <TableCell align="right">aa</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

@@ -55,7 +55,7 @@ const HostRequestDetails = () => {
   return (
     <div className="bg-white shadow p-5">
       <div className="flex items-center justify-between mb-5  !h-full">
-        <h1 className="text-3xl text-primary font-semibold">Car Details</h1>
+        <h1 className="text-3xl text-primary font-semibold">Host Details</h1>
         <div className="flex gap-5">
           <Button
             size="large"

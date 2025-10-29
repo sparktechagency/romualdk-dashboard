@@ -11,13 +11,16 @@ import {
 import FormItem from "antd/es/form/FormItem";
 import type { RcFile } from "antd/es/upload";
 import { useEffect, useState } from "react";
-import { useEditProfileMutation } from "../../redux/features/user/userApi";
+
 import { ImSpinner9 } from "react-icons/im";
 import toast from "react-hot-toast";
-import { useGetProfileQuery } from "../../redux/features/auth/authApi";
-import { imageUrl } from "../../redux/base/baseAPI";
+import { useEditProfileMutation } from "../../../redux/features/user/userApi";
+import { useGetProfileQuery } from "../../../redux/features/auth/authApi";
+import { imageUrl } from "../../../redux/base/baseAPI";
 
-const Setting = () => {
+
+
+const PersonalInformation = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<any[]>([]);
   const [imgURL, setImgURL] = useState<string | null>(null); // for preview
@@ -111,7 +114,7 @@ const Setting = () => {
         <Card
           style={{
             background: "#ffff",
-            border: "1px solid #8B4E2E",
+            border: "1px solid var(--color-primary)",
             minWidth: 300,
             height: "100%"
           }}
@@ -213,4 +216,4 @@ const Setting = () => {
   );
 };
 
-export default Setting;
+export default PersonalInformation;

@@ -57,7 +57,7 @@ export const ChangePassword = () => {
           </div>
 
           <div className="flex justify-center">
-            <Button type="primary" size="large" style={{background: "#8B4E2E"}} htmlType="submit">
+            <Button type="primary" size="large" style={{background: "#3ab8bb"}} htmlType="submit">
               Save Changes
             </Button>
           </div>
