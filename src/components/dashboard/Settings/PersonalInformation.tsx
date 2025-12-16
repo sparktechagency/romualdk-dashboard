@@ -34,6 +34,7 @@ const PersonalInformation = () => {
     email: profileData?.email || "",
   });
 
+
   const props: UploadProps = {
     beforeUpload: (file) => {
       setImageFile(file as RcFile); // store actual file for upload
@@ -67,7 +68,7 @@ const PersonalInformation = () => {
   // Pre-fill form with profile data
   useEffect(() => {
     form.setFieldsValue({
-      name: profileData?.name || "",
+      name: profileData?.fullName || "",
       email: profileData?.email || "",      
     });
   }, [form]);

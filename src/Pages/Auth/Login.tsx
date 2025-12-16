@@ -13,7 +13,7 @@ import { MdOutlineLock } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useLoginAdminMutation } from "../../redux/features/auth/authApi";
-
+import Cookies from "js-cookie";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -33,11 +33,12 @@ const SignIn: React.FC = () => {
 
     try {
       const res = await login(values).unwrap();
-
+      
+      console.log("res", res);
+      
       if (res?.success) {
         toast.success(res?.message || "Login Successful");
-        sessionStorage.setItem("accessToken", res?.data?.accessToken);
-        sessionStorage.setItem("refreshToken", res?.data?.refreshToken);
+        Cookies.set("accessToken", res?.data?.token);        
         navigate("/");
       } else {
         toast.error("Login failed");

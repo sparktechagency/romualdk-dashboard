@@ -6,7 +6,7 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
  
-    baseUrl: "http://10.10.7.102:5009/api/v1",    
+    baseUrl: "http://10.10.7.41:5003/api/v1",    
     prepareHeaders: (headers) => {
       headers.set("ngrok-skip-browser-warning", "true");
       const token = Cookies.get("accessToken");

@@ -9,16 +9,14 @@ const About = () => {
   const [content, setContent] = useState("");
   const [showEditor, setShowEditor] = useState(false);
 
-  const {data: aboutData} = useGetAboutQuery(undefined);
-  const [addDisclaimer] = useAddDisclaimerMutation();
+  const {data: aboutData, refetch} = useGetAboutQuery(undefined);
+  const [addDisclaimer] = useAddDisclaimerMutation();  
 
-  if(aboutData){console.log("aboutData",aboutData);
-  }
+console.log("aboutData", );
+
 
   useEffect(()=>{
-    if(aboutData){
-      setContent(aboutData?.content)
-    }
+    setContent(aboutData?.data?.content)
   },[aboutData])
 
   const handleSubmit = async () => {
@@ -32,8 +30,9 @@ const About = () => {
     }
 
     try {
-      const res = await addDisclaimer({type: "about", content}).unwrap();
-      
+      const res = await addDisclaimer({type: "ABOUT", content}).unwrap();       
+      toast.success("Saved successfully");
+      refetch()
         
       toast.success(res?.message);
       setShowEditor(false);
@@ -186,3 +185,4 @@ const About = () => {
 };
 
 export default About;
+

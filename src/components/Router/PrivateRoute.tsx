@@ -8,7 +8,7 @@ const PrivateRoute = ({ children } : {children: React.ReactNode}) => {
 
   const isAuthenticated = Cookies.get("accessToken"); // Replace with actual authentication logic
 
-  if(isAuthenticated) {
+  if(isAuthenticated !== "undefined") {
     return children;
   }
 
