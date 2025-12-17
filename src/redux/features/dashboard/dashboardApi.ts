@@ -7,8 +7,7 @@ const dashboardApi = baseApi.injectEndpoints({
             transformResponse: (res: {data: any})=> res?.data,
         }),
         getUsersGrowth:  builder.query({
-            query: ()=>`/analytics/user-growth`,
-            transformResponse: (res: {data: any})=> res?.data,
+            query: ()=>`/analytics/yearly${location?.search}`,            
         }),
         getOverView: builder.query({
             query: ()=>`/analytics/overview`,

@@ -74,7 +74,8 @@ const Verification = () => {
   });
 
   useEffect(() => {
-    setSearchText(searchTerm || "");
+    setSearchText(searchTerm);
+    refetch()
   }, [searchTerm]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,11 +115,11 @@ const Verification = () => {
     <Box>
       <Box display="flex" justifyContent="space-between" mb={5}>
         <Typography variant="h4" color="primary" fontWeight={600}>
-          Property List
+          Car Verification
         </Typography>
 
         <TextField
-          placeholder="Search by name, email or service..."
+          placeholder="Find by licensePlate, city, brand "
           value={searchText}
           onChange={handleSearch}
           style={{ width: 325 }}
@@ -139,7 +140,10 @@ const Verification = () => {
               <StyledTableCell>Host Name</StyledTableCell>
               <StyledTableCell>Contact</StyledTableCell>
               <StyledTableCell>Location</StyledTableCell>
-              <StyledTableCell>License Plate</StyledTableCell>
+              <StyledTableCell>Car Brand</StyledTableCell>
+              <StyledTableCell>Car Model</StyledTableCell>              
+              <StyledTableCell>Car Year</StyledTableCell>              
+              <StyledTableCell>License Plate</StyledTableCell>              
               <StyledTableCell>Registration Pic (Front)</StyledTableCell>
               <StyledTableCell>Registration Pic (Back)</StyledTableCell>
               <StyledTableCell>Verification Status</StyledTableCell>
@@ -155,6 +159,9 @@ const Verification = () => {
                   <Typography>{row.userId?.phone}</Typography>                  
                 </TableCell>
                 <TableCell>{row.city}</TableCell>
+                <TableCell>{row.brand}</TableCell>
+                <TableCell>{row.model}</TableCell>
+                <TableCell>{row.year}</TableCell>
                 <TableCell>{row.licensePlate}</TableCell>
                 <TableCell>
                   <MuiImageViewer src={`${imageUrl}${row.carRegistrationPaperFrontPic}`} alt="Front" width={60} />

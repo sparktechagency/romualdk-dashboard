@@ -10,7 +10,6 @@ import HostsList from "./HostsList";
 
 
 
-
 const HostsManage = () => {
     const [open, setOpen] = useState(false);    
   const [searchText, setSearchText] = useState("");
@@ -33,7 +32,7 @@ setSearchText(searchTerm)
     <div>
       {open ? <p onClick={()=>setOpen(false)} className="mb-5 cursor-pointer"><ArrowLeftOutlined size={20}/> Back</p> :
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-3xl text-primary font-semibold">Property List</h1>
+        <h1 className="text-3xl text-primary font-semibold">Host Manage</h1>
         <div className="flex gap-5">
           {/* <Button            
             variant="contained"

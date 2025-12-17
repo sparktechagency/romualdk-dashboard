@@ -1,19 +1,23 @@
 import React, { useState } from "react";
-
-import { styled, TablePagination } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
+  Typography,
+  Button,
+  styled,
+  tableCellClasses,
+} from "@mui/material";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import MuiImageViewer from "../../shared/MuiImageViewer";
+import { imageUrl } from "../../../redux/base/baseAPI";
+import { useGetHostsQuery } from "../../../redux/features/host/hostApi";
 
-const imageURL =
-  "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg";
-const hostImage = "/placeholder.png";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,259 +32,117 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-  "& td, & th": {
-    paddingTop: 12,
-    paddingBottom: 12,
-  },
-}));
-
-const hostsData = [
-  {
-    sl: 1,
-    property: { name: "Mercedes-Benz", image: imageURL },
-    host: { name: "Samuel Johnsons", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Buffalo, New York",
-    status: "Completed",
-  },
-  {
-    sl: 2,
-    property: { name: "BMW X5", image: imageURL },
-    host: { name: "Emily Carter", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Los Angeles, California",
-    status: "Pending",
-  },
-  {
-    sl: 3,
-    property: { name: "Audi A6", image: imageURL },
-    host: { name: "Michael Brown", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Miami, Florida",
-    status: "Completed",
-  },
-  {
-    sl: 4,
-    property: { name: "Tesla Model 3", image: imageURL },
-    host: { name: "Sophia Turner", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Dallas, Texas",
-    status: "Cancelled",
-  },
-  {
-    sl: 5,
-    property: { name: "Lexus RX 350", image: imageURL },
-    host: { name: "William Harris", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Seattle, Washington",
-    status: "Completed",
-  },
-  {
-    sl: 6,
-    property: { name: "Toyota Supra", image: imageURL },
-    host: { name: "Isabella Lewis", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Austin, Texas",
-    status: "Pending",
-  },
-  {
-    sl: 7,
-    property: { name: "Ford Mustang", image: imageURL },
-    host: { name: "James Wilson", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Denver, Colorado",
-    status: "Completed",
-  },
-  {
-    sl: 8,
-    property: { name: "Chevrolet Camaro", image: imageURL },
-    host: { name: "Olivia Martinez", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Chicago, Illinois",
-    status: "Rejected",
-  },
-  {
-    sl: 9,
-    property: { name: "Honda Civic", image: imageURL },
-    host: { name: "Benjamin Clark", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Phoenix, Arizona",
-    status: "Completed",
-  },
-  {
-    sl: 10,
-    property: { name: "Porsche 911", image: imageURL },
-    host: { name: "Charlotte White", image: hostImage, email: "abc@gmail.com" },
-
-    location: "San Francisco, California",
-    status: "Pending",
-  },
-  // {
-  //   sl: 11,
-  //   property: { name: "Nissan GTR", image: imageURL },
-  //   host: { name: "Ethan Taylor", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Las Vegas, Nevada",
-  //   status: "Completed",
-  // },
-  // {
-  //   sl: 12,
-  //   property: { name: "Jaguar XF", image: imageURL },
-  //   host: { name: "Amelia Walker", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Portland, Oregon",
-  //   status: "Cancelled",
-  // },
-  // {
-  //   sl: 13,
-  //   property: { name: "Volvo XC90", image: imageURL },
-  //   host: { name: "Logan Davis", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Atlanta, Georgia",
-  //   status: "Completed",
-  // },
-  // {
-  //   sl: 14,
-  //   property: { name: "Ferrari Roma", image: imageURL },
-  //   host: { name: "Mia Robinson", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "New York City, New York",
-  //   status: "Pending",
-  // },
-  // {
-  //   sl: 15,
-  //   property: { name: "Lamborghini Urus", image: imageURL },
-  //   host: { name: "Alexander Thompson", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Houston, Texas",
-  //   status: "Completed",
-  // },
-];
+const StyledTableRow = (props: any) => <TableRow {...props} />;
 
 type props = {
   open: boolean;
-  setOpen: any;
+  setOpen: (open: boolean) => void;
 };
 
 const HostsList = ({ open, setOpen }: props) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const { data: hostsData, isLoading } = useGetHostsQuery({});
+
+  console.log("hostsData", hostsData);
+  
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    console.log("event", event);
-    
     setCurrentPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(0);
   };
 
+  if (isLoading) return <p>Loading...</p>;
+
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell>Host Lists</StyledTableCell>
-            <StyledTableCell align="right">Email</StyledTableCell>
+            <StyledTableCell>Host Name</StyledTableCell>
+            <StyledTableCell align="right">Contact</StyledTableCell>
             <StyledTableCell align="right">Location</StyledTableCell>
-            <StyledTableCell align="right">Status</StyledTableCell>
+            <StyledTableCell align="right">NID Front</StyledTableCell>
+            <StyledTableCell align="right">NID Back</StyledTableCell>
+            <StyledTableCell align="right">Host Status</StyledTableCell>
             <StyledTableCell align="right">Action</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {hostsData?.map((row, index) => (
-            <StyledTableRow
-              key={index}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              {/* Property */}
-              <TableCell component="th" scope="row">
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <img
-                    src={row.host.image}
-                    alt={row.host.name}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 8,
-                      objectFit: "cover",
+          {hostsData?.data
+            ?.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage)
+            .map((host: any) => (
+              <StyledTableRow key={host._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                {/* Host Name */}
+                <StyledTableCell>
+                  <Typography fontWeight={500}>
+                    {host.firstName} {host.lastName}
+                  </Typography>
+                </StyledTableCell>
+
+                {/* Contact */}
+                <StyledTableCell >{host.phone}</StyledTableCell>
+
+                {/* Location */}
+                <StyledTableCell>
+                  {host?.city ?? "N/A" }
+                </StyledTableCell>
+
+                {/* NID Front */}
+                <StyledTableCell >
+                  <MuiImageViewer src={`${imageUrl}${host.nidFrontPic}`} alt="NID Front" width={60} />
+                </StyledTableCell>
+
+                {/* NID Back */}
+                <StyledTableCell >
+                  <MuiImageViewer src={`${imageUrl}${host.nidBackPic}`} alt="NID Back" width={60} />
+                </StyledTableCell>
+
+                {/* Host Status */}
+                <StyledTableCell >
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor:
+                        host.hostStatus === "APPROVED"
+                          ? "green"
+                          : host.hostStatus === "PENDING"
+                          ? "#ED6C02"
+                          : host.hostStatus === "REJECTED"
+                          ? "red"
+                          : "#F0F0F0",
+                      color: "white",
+                      padding: "4px 12px",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      boxShadow: "none",
                     }}
+                  >
+                    {host.hostStatus}
+                  </Button>
+                </StyledTableCell>
+
+                {/* Action */}
+                <StyledTableCell >
+                  <RemoveRedEyeOutlinedIcon
+                    className="cursor-pointer"
+                    onClick={() => setOpen(!open)}
+                    fontSize="medium"
                   />
-                  <span>{row.property.name}</span>
-                </div>
-              </TableCell>
-
-              {/* Host */}
-              <TableCell align="left">
-                <span>{row?.host?.email}</span>
-              </TableCell>
-
-              <TableCell component="th" scope="row">
-                
-                  <span>{row?.location}</span>
-
-              </TableCell>
-
-              
-
-              {/* Status */}
-              <TableCell align="left">
-                <span
-                  style={{
-                    backgroundColor:
-                      row.status === "Completed"
-                        ? "#E6F7E6"
-                        : row.status === "Pending"
-                        ? "#FFF4E6"
-                        : row.status === "Cancelled"
-                        ? "#FFE6E6"
-                        : "#F0F0F0",
-                    color:
-                      row.status === "Completed"
-                        ? "#2E7D32"
-                        : row.status === "Pending"
-                        ? "#ED6C02"
-                        : row.status === "Cancelled"
-                        ? "#D32F2F"
-                        : "#616161",
-                    padding: "4px 12px",
-                    borderRadius: 20,
-                    fontSize: 13,
-                    fontWeight: 500,
-                  }}
-                >
-                  {row.status}
-                </span>
-              </TableCell>
-              {/* Location */}
-              <TableCell align="left">
-                {" "}
-                <RemoveRedEyeOutlinedIcon
-                  className="cursor-pointer"
-                  onClick={() => setOpen(!open)}
-                  fontSize="medium"
-                />{" "}
-              </TableCell>
-            </StyledTableRow>
-          ))}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
         </TableBody>
       </Table>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={hostsData?.length}
+        count={hostsData?.data?.length || 0}
         rowsPerPage={rowsPerPage}
         page={currentPage}
         onPageChange={handleChangePage}

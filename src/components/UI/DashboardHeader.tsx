@@ -24,17 +24,11 @@ const DashboardHeader = () => {
       gap={3}
     >
       {/* Notification */}
-      <Badge badgeContent={0} showZero color="primary">
-        <IconButton
-          size="large"
-          component="a"
-          href="https://www.google.com"
-          target="_blank"
-        >
-          <NotificationsNoneOutlinedIcon
+
+      <Badge badgeContent={0} showZero  color="error">
+        <NotificationsNoneOutlinedIcon
             sx={{ fontSize: 26, color: "rgba(0,0,0,.5)" }}
           />
-        </IconButton>
       </Badge>
 
       {/* Profile */}
@@ -50,7 +44,7 @@ const DashboardHeader = () => {
 
         <Box>
           <Typography fontWeight={700} fontSize={18}>
-            {profileData?.fullName}            
+            {profileData?.fullName}
           </Typography>
           <Typography fontSize={14} color="text.secondary" fontWeight={600}>
             {profileData?.email || "ssmd.bayzid@gmail.com"}

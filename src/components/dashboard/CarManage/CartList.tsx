@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { styled, TablePagination } from "@mui/material";
+import { IconButton, Menu, MenuItem, styled, TablePagination } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,6 +10,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import { MdMoreVert } from "react-icons/md";
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { FaLock } from "react-icons/fa";
+import { useGetCarsQuery } from "../../../redux/features/cars/carApi";
 
 const imageURL =
   "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg";
@@ -113,41 +117,6 @@ const hostsData = [
     location: "San Francisco, California",
     status: "Pending",
   },
-  // {
-  //   sl: 11,
-  //   property: { name: "Nissan GTR", image: imageURL },
-  //   host: { name: "Ethan Taylor", image: hostImage },
-  //   location: "Las Vegas, Nevada",
-  //   status: "Completed",
-  // },
-  // {
-  //   sl: 12,
-  //   property: { name: "Jaguar XF", image: imageURL },
-  //   host: { name: "Amelia Walker", image: hostImage },
-  //   location: "Portland, Oregon",
-  //   status: "Cancelled",
-  // },
-  // {
-  //   sl: 13,
-  //   property: { name: "Volvo XC90", image: imageURL },
-  //   host: { name: "Logan Davis", image: hostImage },
-  //   location: "Atlanta, Georgia",
-  //   status: "Completed",
-  // },
-  // {
-  //   sl: 14,
-  //   property: { name: "Ferrari Roma", image: imageURL },
-  //   host: { name: "Mia Robinson", image: hostImage },
-  //   location: "New York City, New York",
-  //   status: "Pending",
-  // },
-  // {
-  //   sl: 15,
-  //   property: { name: "Lamborghini Urus", image: imageURL },
-  //   host: { name: "Alexander Thompson", image: hostImage },
-  //   location: "Houston, Texas",
-  //   status: "Completed",
-  // },
 ];
 
 type props  = {
@@ -156,11 +125,37 @@ type props  = {
 }
 
 
-const HostsList = ({open, setOpen}: props) => {
+const CartList = ({open, setOpen}: props) => {
   const [currentPage, setCurrentPage] = useState(1);  
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const { data, isLoading, refetch } = useGetCarsQuery({ page: 1, limit: 10 });
+
+  // For menu per row
+  const [menuAnchor, setMenuAnchor] = useState<{ anchor: HTMLElement | null; id: string | null }>({
+    anchor: null,
+    id: null,
+  });
+
   
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
+      setMenuAnchor({ anchor: event.currentTarget, id });
+    };
+  
+    const handleMenuClose = () => {
+      setMenuAnchor({ anchor: null, id: null });
+    };
+  
+    
+  const handleToggleStatusPage = async (status: string, id: string) => {
+    try {
+      await updateVerification({ id, verificationStatus: status }).unwrap();
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+    handleMenuClose();
+  };
 
 
   const handleChangePage = (event: unknown, newPage: number)=>{
@@ -260,7 +255,29 @@ const HostsList = ({open, setOpen}: props) => {
                 </span>
               </TableCell>
                {/* Location */}
-              <TableCell align="left"> <RemoveRedEyeOutlinedIcon className="cursor-pointer" onClick={()=>setOpen(!open)} fontSize="medium"/> </TableCell>
+              <TableCell align="left">
+                 <RemoveRedEyeOutlinedIcon className="cursor-pointer" onClick={()=>setOpen(!open)} fontSize="medium"/> 
+                  <TableCell>
+                  <IconButton onClick={(e) => handleMenuClick(e, row._id)}>
+                    <MdMoreVert />
+                  </IconButton>
+
+                  <Menu
+                    anchorEl={menuAnchor.anchor}
+                    open={menuAnchor.id === row._id && Boolean(menuAnchor.anchor)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem onClick={() => handleToggleStatusPage("APPROVED", row._id)}>
+                      <IoCheckmarkDoneOutline className="text-green-500" style={{ marginRight: 8 }} />
+                      Approve
+                    </MenuItem>
+                    <MenuItem onClick={() => handleToggleStatusPage("REJECTED", row._id)}>
+                      <FaLock className="text-red-500" style={{ marginRight: 8 }} />
+                      Reject
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableCell>
             </StyledTableRow>
           ))}
         </TableBody>
@@ -279,4 +296,4 @@ const HostsList = ({open, setOpen}: props) => {
   );
 };
 
-export default HostsList;
+export default CartList;

@@ -48,7 +48,7 @@ const Statics = () => {
           Total Bookings
         </p>
         <h1 className="font-semibold text-center text-white mt-4 text-4xl">
-          5000
+          {analyticsData?.bookings ?? 0}
         </h1>
       </Box>
 

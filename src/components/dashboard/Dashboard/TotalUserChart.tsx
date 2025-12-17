@@ -1,6 +1,6 @@
 // import { ConfigProvider, Select } from "antd";
 import { Box, FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -11,37 +11,29 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useGetUsersGrowthQuery } from "../../../redux/features/dashboard/dashboardApi";
 
-// const { Option } = Select;
+import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 
-type TUserGrowth = {
-  month: string;
-  guest: number;
-  hosts: number;
-};
-
-// Sample chart data
-const userGrowthData: TUserGrowth[] = [
-  { month: "Jan", guest: 800, hosts: 400 },
-  { month: "Feb", guest: 900, hosts: 600 },
-  { month: "Mar", guest: 1000, hosts: 800 },
-  { month: "Apr", guest: 1100, hosts: 900 },
-  { month: "May", guest: 1300, hosts: 1000 },
-  { month: "Jun", guest: 1400, hosts: 1100 },
-  { month: "Jul", guest: 1500, hosts: 1200 },
-  { month: "Aug", guest: 1600, hosts: 1400 },
-  { month: "Sep", guest: 1700, hosts: 1500 },
-  { month: "Oct", guest: 1800, hosts: 1700 },
-  { month: "Nov", guest: 2000, hosts: 1800 },
-  { month: "Dec", guest: 2200, hosts: 2000 },
-];
 
 const TotalUserChart = () => {
   const [selectedYear, setSelectedYear] = useState("");
 
+  const { data: userGrowth,  refetch } = useGetUsersGrowthQuery({});
+
+  const { year } = getSearchParams();
+  const updateSearchParams = useUpdateSearchParams();
+
+  useEffect(() => {
+    refetch()
+  }, [year])
+
+
   const currentYear = new Date().getFullYear();
   const CustomTooltip = ({ active, payload }: any) => {
-  const isVisible = active && payload && payload.length;
+    const isVisible = active && payload && payload.length;
+    console.log("payload", payload);
 
     return (
       <div
@@ -52,8 +44,9 @@ const TotalUserChart = () => {
       >
         {isVisible && (
           <div className="p-2 rounded-md bg-primary/90 text-white shadow">
-            <p className="label  font-semibold text-sm whitespace-nowrap">{`New : ${payload[0]?.value}`}</p>
-            <p className="label  font-semibold text-sm whitespace-nowrap">{`${payload[0]?.name} : ${payload[0].value}`}</p>
+            <p className="label  font-semibold text-sm whitespace-nowrap capitalize">{`${payload[0]?.name} : ${payload[0]?.value}`}</p>
+
+            <p className="label  font-semibold text-sm whitespace-nowrap capitalize">{`${payload[1]?.name} : ${payload[1]?.value}`}</p>
             <span></span>
           </div>
         )}
@@ -64,7 +57,9 @@ const TotalUserChart = () => {
 
   const handleChange = (event: SelectChangeEvent) => {
     const value = event.target.value as string;
+    updateSearchParams({ year: value })
     setSelectedYear(value);
+
   };
 
   return (
@@ -125,7 +120,7 @@ const TotalUserChart = () => {
       <div className="mt-6">
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
-            data={userGrowthData}
+            data={userGrowth?.data?.chart}
             style={{ backgroundColor: "rgba(0,0,,0,.3)" }}
             margin={{
               top: 5,
@@ -148,7 +143,7 @@ const TotalUserChart = () => {
             <Bar
               barSize={25}
               //   radius={50}
-              dataKey="hosts"
+              dataKey="host"
               fill="#40CACD"
             />
           </BarChart>
