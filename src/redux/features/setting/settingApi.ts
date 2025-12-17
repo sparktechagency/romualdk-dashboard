@@ -3,19 +3,19 @@ import { baseApi } from "../../base/baseAPI";
 const settingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getFAQ: builder.query({
-      query: () => "/faq",
+      query: () => "/faqs",
       transformResponse: (res: { data: any }) => res?.data,
     }),
     addFAQ: builder.mutation({
       query: (data) => ({
-        url: "/faq",
+        url: "/faqs",
         method: "POST",
         body: data,
       }),
     }),
     updateFAQ: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/faq/${id}`,
+        url: `/faqs/${id}`,
         method: "PATCH",
         body: data,
       }),
@@ -23,7 +23,7 @@ const settingApi = baseApi.injectEndpoints({
     deleteFAQ: builder.mutation({
       query: (id)=> {
         return {
-          url: `/faq/${id}`,
+          url: `/faqs/${id}`,
           method: "DELETE",          
         }
       }

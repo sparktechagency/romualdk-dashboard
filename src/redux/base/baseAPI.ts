@@ -18,7 +18,7 @@ export const baseApi = createApi({
     credentials: "include",
   }),
   endpoints: () => ({}),
-  tagTypes: ["user", "notifications", "admin", "category"],
+  tagTypes: ["user", "notifications", "admin", "category", "verification"],
 });
 
-export const imageUrl = "http://10.10.7.102:5009";
+export const imageUrl = "http://10.10.7.41:5003";

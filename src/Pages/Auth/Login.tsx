@@ -32,10 +32,7 @@ const SignIn: React.FC = () => {
     };
 
     try {
-      const res = await login(values).unwrap();
-      
-      console.log("res", res);
-      
+      const res = await login(values).unwrap();      
       if (res?.success) {
         toast.success(res?.message || "Login Successful");
         Cookies.set("accessToken", res?.data?.token);        

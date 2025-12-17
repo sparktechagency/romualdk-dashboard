@@ -37,17 +37,17 @@ const userGrowthData: TUserGrowth[] = [
 ];
 
 const TotalUserChart = () => {
-  const [age, setAge] = useState("")
+  const [selectedYear, setSelectedYear] = useState("");
 
+  const currentYear = new Date().getFullYear();
   const CustomTooltip = ({ active, payload }: any) => {
-    const isVisible = active && payload && payload.length;
-
+  const isVisible = active && payload && payload.length;
 
     return (
       <div
         className="top-20 mr-10 mb-10 "
         style={{
-          visibility: isVisible ? "visible" : "hidden",          
+          visibility: isVisible ? "visible" : "hidden",
         }}
       >
         {isVisible && (
@@ -62,38 +62,35 @@ const TotalUserChart = () => {
   };
 
 
-    const handleChange = (event: SelectChangeEvent) => {
-    console.log(event.target.value as string);
-    setAge(event.target.value as string);
+  const handleChange = (event: SelectChangeEvent) => {
+    const value = event.target.value as string;
+    setSelectedYear(value);
   };
 
   return (
     <div className="w-full pb-5 pt-8 bg-white rounded-xl mt-6 shadow mb-10">
       <div className="flex items-center justify-between px-6">
         <p className="font-semibold text-primary text-2xl">Geasts Vs Hosts</p>
-        <Box sx={{
-          minWidth: 150,
-          py:0,          
-        }}>
-        <FormControl fullWidth>
-          <InputLabel id="chart" size="small">Age</InputLabel>
-          <Select 
-          labelId="chart" 
-          label="Monthly"
-          onChange={handleChange}
-          size="small"
-          value={age || ""}
-          >
-            <MenuItem value="">None</MenuItem>
-            <MenuItem value="Gueast" sx={{display: 'flex'}}>
-              <span className="w-3 h-3 bg-blue mr-2 inline-block" /> Guasts
-            </MenuItem>
-            <MenuItem value="Hosts" sx={{display: 'flex'}}>
-              <span className="w-3 h-3 bg-primary mr-2 inline-block" /> Hosts
-            </MenuItem>
-          </Select>
-        </FormControl>
-</Box>
+        <Box sx={{ minWidth: 150 }}>
+          <FormControl fullWidth size="small">
+            <InputLabel size="small" id="booking">
+              Year
+            </InputLabel>
+            <Select
+              labelId="booking"
+              size="small"
+              value={selectedYear}
+              onChange={handleChange}
+            >
+              <MenuItem value="">None</MenuItem>
+              <MenuItem value={currentYear}>{currentYear}</MenuItem>
+              <MenuItem value={currentYear - 1}>{currentYear - 1}</MenuItem>
+              <MenuItem value={currentYear - 2}>{currentYear - 2}</MenuItem>
+              <MenuItem value={currentYear - 3}>{currentYear - 3}</MenuItem>
+              <MenuItem value={currentYear - 4}>{currentYear - 4}</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
         {/* <ConfigProvider
           theme={{
             components: {
@@ -139,8 +136,8 @@ const TotalUserChart = () => {
           >
             <CartesianGrid vertical={false} strokeDasharray={1} />
             <XAxis dataKey="month" />
-            <YAxis axisLine={false}/>
-            <Tooltip  content={CustomTooltip} />
+            <YAxis axisLine={false} />
+            <Tooltip content={CustomTooltip} />
             <Legend />
             <Bar
               barSize={25}

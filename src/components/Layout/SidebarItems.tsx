@@ -11,7 +11,7 @@ interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: <MdOutlineDashboard /> },
+  { to: "/", label: "Dashboard", icon: <MdOutlineDashboard /> },
   {
     to: "/cars-manage",
     label: "Cars Management",

@@ -12,9 +12,9 @@ import {
 import React, { useState } from "react";
 import About from "./About";
 import { ChangePassword } from "./ChangePassword";
-import FAQ from "./FAQ";
 import PersonalInformation from "./PersonalInformation";
 import TermsCondition from "./TermsCondition";
+import FAQ from "./FAQ/Faq";
 
 // --- Placeholder for react-icons/lucide-react, using inline SVG instead ---
 // Icon component for the list items

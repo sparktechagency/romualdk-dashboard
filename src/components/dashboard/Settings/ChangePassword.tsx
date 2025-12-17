@@ -1,68 +1,104 @@
-import {
-    Button,
-    Form,
-    Input
-} from "antd";
-import FormItem from "antd/es/form/FormItem";
+import { Button, TextField, Box, Typography } from "@mui/material";
 import { CiLock } from "react-icons/ci";
+import { useState, useEffect } from "react";
+import { useChangePasswordMutation } from "../../../redux/features/auth/authApi";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
+
 
 export const ChangePassword = () => {
-  const [form] = Form.useForm();
-  // Static profile form submission handler
-  const onFinish = async (values: any) => {
-    console.log("Form submitted with values:", values);
-    // Replace with static handling if needed
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [error, setError] = useState("");
+
+  const [changePassword] = useChangePasswordMutation();
+
+  // 🔁 Revalidate when passwords change
+  useEffect(() => {
+    if (confirmPassword && confirmPassword !== newPassword) {
+      setError("Confirm password does not match");
+    } else {
+      setError("");
+    }
+  }, [newPassword, confirmPassword]);
+
+  const onSubmit = async (e:any) => {
+    e.preventDefault();
+
+    if (error) return;
+
+    try {
+      const res = await changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      }).unwrap();
+      
+      Cookies.remove('accessToken');
+      toast.success(res?.message);
+    } catch (error:any) {
+      toast.error(error?.data?.message || "Something went wrong");
+    }
   };
 
   return (
-    <div className="flex items-center justify-center h-full">
-      <div className="w-xl p-6 shadow-md rounded-xl max-w-xl border bg-white border-borderColor">
-        <h2 className="text-xl flex items-center gap-3 justify-center font-semibold mb-4 text-primary">
+    <Box className="flex items-center justify-center h-full">
+      <Box className="w-xl p-6 shadow-md rounded-xl max-w-xl border bg-white">
+        <Typography
+          variant="h5"
+          className="flex items-center gap-3 justify-center font-semibold  text-primary"
+        >
           Change Password <CiLock size={25} />
-        </h2>
+        </Typography>
 
-        <Form layout="vertical" form={form} onFinish={onFinish} className="">
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-x-4">
-            <FormItem
-              name="currentPassword"
-              label={<p className=" font-semibold text-lg">Current Password</p>}
-              rules={[{ message: "Enter current password" }]}
-            >
-              <Input.Password
-                placeholder="Enter current password"
-                style={{ height: 48 }}
-              />
-            </FormItem>
-            <FormItem
-              name="password"
-              label={<p className=" font-semibold text-lg">New Password</p>}
-              rules={[{ message: "Please enter your new" }]}
-            >
-              <Input.Password
-                placeholder="Enter Password"
-                style={{ height: 48 }}
-              />
-            </FormItem>
+        <Box component="form" onSubmit={onSubmit}>
+          <TextField
+            fullWidth
+            type="password"
+            label="Current Password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            sx={{ mb: 2, mt: 3 }}
+            required
+          />
 
-            <FormItem
-              name="confirmPassword"
-              label={<p className=" font-semibold text-lg">Confirm Password</p>}
-              rules={[{ message: "Please enter your phone" }]}
-            >
-              <Input.Password
-                placeholder="Enter confirm Password"
-                style={{ height: 48 }}
-              />
-            </FormItem>
-          </div>
+          <TextField
+            fullWidth
+            type="password"
+            label="New Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            sx={{ mb: 2 }}
+            required
+          />
 
-          <div className="flex justify-center">
-            <Button type="primary" size="large" style={{background: "#3ab8bb"}} htmlType="submit">
+          <TextField
+            fullWidth
+            type="password"
+            label="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={Boolean(error)}
+            helperText={error}
+            sx={{ mb: 3 }}
+            required
+          />
+
+          <Box className="flex justify-center">
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              sx={{ backgroundColor: "#3ab8bb" }}
+              disabled={Boolean(error)}
+            >
               Save Changes
             </Button>
-          </div>
-        </Form>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };

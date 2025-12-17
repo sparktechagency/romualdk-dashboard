@@ -1,49 +1,63 @@
-import { BellOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button } from "antd";
+import {
+  Avatar,
+  Badge,
+  IconButton,
+  Box,
+  Typography,
+} from "@mui/material";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { useGetProfileQuery } from "../../redux/features/auth/authApi";
 import { imageUrl } from "../../redux/base/baseAPI";
 
 const DashboardHeader = () => {
   const { data: profileData } = useGetProfileQuery(undefined);
 
-  if (profileData) {
-    console.log("profileData", profileData);
-  }
-
   return (
-    <div className="h-[80px] border-b border-gray-300 flex items-center justify-end pr-5 bg-white gap-5">
-      <Badge count={0} showZero>
-        <Button
+    <Box
+      height={80}
+      borderBottom="1px solid #e0e0e0"
+      display="flex"
+      alignItems="center"
+      justifyContent="flex-end"
+      pr={3}
+      bgcolor="white"
+      gap={3}
+    >
+      {/* Notification */}
+      <Badge badgeContent={0} showZero color="primary">
+        <IconButton
           size="large"
-          icon={
-            <BellOutlined style={{ fontSize: 22, color: "rgba(0,0,0,.5)" }} />
-          }
+          component="a"
           href="https://www.google.com"
           target="_blank"
-        />
+        >
+          <NotificationsNoneOutlinedIcon
+            sx={{ fontSize: 26, color: "rgba(0,0,0,.5)" }}
+          />
+        </IconButton>
       </Badge>
 
-      <div className="flex items-center gap-3">
+      {/* Profile */}
+      <Box display="flex" alignItems="center" gap={2}>
         <Avatar
-          size={50}
+          sx={{ width: 50, height: 50 }}
           src={
-            <img
-              // @ts-ignore
-              src={
-                profileData?.profileImage
-                  ? `${imageUrl}${profileData?.profileImage}`
-                  : "/placeholder.png"
-              }
-              alt="avatar"
-            />
+            profileData?.profileImage
+              ? `${imageUrl}${profileData?.profileImage}`
+              : "/placeholder.png"
           }
         />
-        <div className="">
-          <p className="font-bold text-lg">S S Md. Bayzid</p>
-          <p className="text-slate-500 font-semibold">ssmd.bayzid@gmail.com</p>
-        </div>
-      </div>
-    </div>
+
+        <Box>
+          <Typography fontWeight={700} fontSize={18}>
+            {profileData?.fullName}            
+          </Typography>
+          <Typography fontSize={14} color="text.secondary" fontWeight={600}>
+            {profileData?.email || "ssmd.bayzid@gmail.com"}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

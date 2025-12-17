@@ -1,8 +1,9 @@
-import { Button } from "antd";
+
 import JoditEditor from "jodit-react";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useAddDisclaimerMutation, useGetAboutQuery } from "../../../redux/features/setting/settingApi";
+import { Button } from "@mui/material";
 
 const About = () => {
   const editor = useRef(null);
@@ -105,8 +106,7 @@ console.log("aboutData", );
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl text-primary font-semibold">About</h1>
         <Button
-          onClick={() => setShowEditor(!showEditor)}
-          type="primary"
+          onClick={() => setShowEditor(!showEditor)}          
           size="large"
           style={{
             width: 150,
@@ -133,8 +133,7 @@ console.log("aboutData", );
           />
           <div className="flex items-center justify-end gap-4">
             <Button
-              onClick={() => setShowEditor(!showEditor)}
-              type="primary"
+              onClick={() => setShowEditor(!showEditor)}             
               size="large"
               style={{
                 width: 150,
@@ -147,8 +146,7 @@ console.log("aboutData", );
               Cancel
             </Button>
             <Button
-              onClick={handleSubmit}
-              type="primary"
+              onClick={handleSubmit}             
               size="large"
               style={{
                 width: 150,

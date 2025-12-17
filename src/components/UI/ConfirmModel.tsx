@@ -1,5 +1,14 @@
-import { Modal } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import React from "react";
 
 type ConfirmModalProps = {
@@ -26,32 +35,66 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   danger = true,
 }) => {
   return (
-    <Modal
+    <Dialog
       open={open}
-      title={
-        <div className="flex items-center gap-2 border-b border-primary/20 pb-4">
-          <ExclamationCircleOutlined className="text-red-500 text-2xl" />
-          <p className="text-xl font-semibold text-primary">{title}</p>
-        </div>
-      }
-      onOk={onConfirm}
-      onCancel={onCancel}
-      okText={okText}
-      cancelText={cancelText}
-      okButtonProps={{
-        danger,
-        className: "rounded-lg font-medium",
+      onClose={onCancel}
+      maxWidth="xs"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: "1.25rem",
+        },
       }}
-      cancelButtonProps={{
-        className: "rounded-lg font-medium",
-      }}
-      confirmLoading={confirmLoading}
-      centered
-      className="rounded-2xl"
-      bodyStyle={{ padding: "1.5rem", borderRadius: "1rem" }}
     >
-      <p className="text-slate-600 text-base leading-relaxed">{content}</p>
-    </Modal>
+      <DialogTitle>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1.5}
+          borderBottom="1px solid"
+          borderColor="primary.light"
+          pb={2}
+        >
+          <ErrorOutlineIcon
+            color={danger ? "error" : "primary"}
+            fontSize="large"
+          />
+          <Typography variant="h6" fontWeight={600} color="primary">
+            {title}
+          </Typography>
+        </Box>
+      </DialogTitle>
+
+      <DialogContent sx={{ pt: 3 }}>
+        <Typography color="text.secondary" lineHeight={1.7}>
+          {content}
+        </Typography>
+      </DialogContent>
+
+      <DialogActions sx={{ px: 3, pb: 3 }}>
+        <Button
+          onClick={onCancel}
+          variant="outlined"
+          sx={{ borderRadius: "0.75rem", fontWeight: 500 }}
+        >
+          {cancelText}
+        </Button>
+
+        <Button
+          onClick={onConfirm}
+          variant="contained"
+          color={danger ? "error" : "primary"}
+          disabled={confirmLoading}
+          sx={{ borderRadius: "0.75rem", fontWeight: 500 }}
+        >
+          {confirmLoading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            okText
+          )}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

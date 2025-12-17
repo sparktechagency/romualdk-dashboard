@@ -1,4 +1,5 @@
-import { Button } from 'antd';
+
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const ErrorPage = () => {
@@ -16,7 +17,7 @@ const ErrorPage = () => {
                 Sorry, the page you're looking for doesn't exist or has been moved.
             </p>
 
-            <Button type="primary" size="large" onClick={handleBackHome}>
+            <Button size="large" onClick={handleBackHome}>
                 Go Back Home
             </Button>
         </div>
