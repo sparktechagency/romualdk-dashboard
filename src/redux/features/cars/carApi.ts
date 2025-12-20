@@ -10,6 +10,7 @@ export const carApi = baseApi.injectEndpoints({
         method: "GET",
         params,
       }),
+      transformResponse: (res: {data: any})=> res?.data,
       providesTags: ["car"],
     }),
 

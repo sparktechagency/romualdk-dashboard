@@ -5,14 +5,17 @@ import { FaSearch } from "react-icons/fa";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { getSearchParams } from "../../../utils/getSearchParams";
 import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
-import HostDetails from "./HostDetails";
+import HostDetails from "./HostDetailsModal";
 import HostsList from "./HostsList";
+import HostDetailsModal from "./HostDetailsModal";
 
 
 
 const HostsManage = () => {
     const [open, setOpen] = useState(false);    
   const [searchText, setSearchText] = useState("");
+    const [details, setDetails] = useState(true);
+    const [selectedHost, setSelectedHost] = useState(null);  
 
   const updateSearchParams = useUpdateSearchParams();
   const {searchTerm} = getSearchParams();
@@ -66,12 +69,14 @@ setSearchText(searchTerm)
       </div>}
 
      {!open ?  <div className="bg-white h-full shadow">
-        <HostsList  open={open} setOpen={setOpen}/>
+        <HostsList setSelectedHost={setSelectedHost} open={open} setOpen={setOpen}/>
       </div> 
       :
-      <div className="">
-        <HostDetails />
-      </div>}      
+      <HostDetailsModal
+          open={open}
+          selectedHost={selectedHost}
+          onClose={() => setOpen(false)}          
+        />}      
     </div>
   );
 };

@@ -105,8 +105,7 @@ const CarDetails = ({  items }: props) => {
       </div>
       <p className="text-xl font-semibold">Features</p>
 
-      <Table>
-        {/* ✅ Add Features Data Section */}
+      <Table>        
         <tbody>
           <tr>
             <td colSpan={2}>
@@ -255,6 +254,3 @@ const CarDetails = ({  items }: props) => {
 };
 
 export default CarDetails;
-
-
-

@@ -33,8 +33,8 @@ const MuiImageViewer: React.FC<MuiImageViewerProps> = ({
           style={{ width: '100%', height, borderRadius: 8, cursor: "pointer", objectFit: "cover" }}          
         />
 
-        <div onClick={handleOpen} className="group-hover:flex hidden cursor-pointer bg-black/50 text-white absolute top-0 left-0 z-10 h-full w-full  items-center justify-center">
-          View
+        <div onClick={handleOpen} className="text-xs whitespace-nowrap group-hover:flex hidden cursor-pointer bg-black/50 text-white absolute top-0 left-0 z-10 h-full w-full  items-center justify-center">
+          {alt}
         </div>
       </div>            
 

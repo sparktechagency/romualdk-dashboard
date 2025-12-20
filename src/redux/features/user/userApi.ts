@@ -4,8 +4,8 @@ const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query({      
       query: () =>`/users${location.search}`,
-      providesTags: ['user']
-      // transformResponse: (response: { data: any }) => response.data,
+      providesTags: ['user'],
+      transformResponse: (response: { data: any }) => response.data,
     }),
     getAdmin: build.query({
         query: ()=> `/users/admins${location.search}`,

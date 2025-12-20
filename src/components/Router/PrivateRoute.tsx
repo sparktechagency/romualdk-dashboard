@@ -8,11 +8,12 @@ const PrivateRoute = ({ children } : {children: React.ReactNode}) => {
 
   const isAuthenticated = Cookies.get("accessToken"); // Replace with actual authentication logic
 
-  if(isAuthenticated !== "undefined") {
-    return children;
+
+  if(!isAuthenticated || isAuthenticated === "undefined") {
+    return <Navigate to="/login" state={{ from: location }} />
   }
 
-  return <Navigate to="/login" state={{ from: location }} />;
+  return children;;
 };
 
 export default PrivateRoute;

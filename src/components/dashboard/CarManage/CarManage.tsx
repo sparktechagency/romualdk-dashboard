@@ -1,32 +1,39 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import SharedModal from "../../shared/SharedModal";
-import CarAddForm from "./CarAddForm";
-import CarDetails from "./CarDetails";
+import { useGetCarsQuery } from "../../../redux/features/cars/carApi";
+import CarDetailsModal from "./CarDetailsModal";
 import CartList from "./CartList";
 
 const CarManage = () => {
-    const [open, setOpen] = useState(false);
-    const [openForm, setOpenForm] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [details, setDetails] = useState(true);
+  const [selectedCar, setSelectedCar] = useState(null);  
 
+const { data: carData, isLoading, refetch } = useGetCarsQuery({ page: 1, limit: 10 });
 
   return (
     <div>
-      {open ? <p onClick={()=>setOpen(false)} className="mb-5 cursor-pointer"><ArrowLeftOutlined size={20}/> Back</p> :
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-3xl text-primary font-semibold">Car List</h1>
-      </div>}
+      {open ? <p onClick={() => setOpen(false)} className="mb-5 cursor-pointer"><ArrowLeftOutlined size={20} /> Back</p> :
+        <div className="flex items-center justify-between mb-5">
+          <h1 className="text-3xl text-primary font-semibold">Car List</h1>
+        </div>}
 
-     {!open ?  <div className="bg-white h-full shadow">
-        <CartList  open={open} setOpen={setOpen}/>
-      </div> 
-      :
-      <div className="">
-        <CarDetails items={itemData}/>
-      </div>}
-      <SharedModal width={700} height={1000} title="Add Car" open={openForm} handleClose={()=>setOpenForm(!openForm)}>
-        <CarAddForm />
-      </SharedModal>
+      {!open ? <div className="bg-white h-full shadow">
+        <CartList 
+          details={details} 
+          carData={carData} 
+          setDetails={setDetails} 
+          open={open} 
+          setOpen={setOpen} 
+          setSelectedCar={setSelectedCar}/>
+      </div>
+        :
+        <CarDetailsModal
+          open={open}
+          selectedCar={selectedCar}
+          onClose={() => setOpen(false)}          
+        />}
+
     </div>
   );
 };

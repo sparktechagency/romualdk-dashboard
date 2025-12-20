@@ -37,9 +37,10 @@ const StyledTableRow = (props: any) => <TableRow {...props} />;
 type props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  setSelectedHost: any;
 };
 
-const HostsList = ({ open, setOpen }: props) => {
+const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -131,7 +132,7 @@ const HostsList = ({ open, setOpen }: props) => {
                 <StyledTableCell >
                   <RemoveRedEyeOutlinedIcon
                     className="cursor-pointer"
-                    onClick={() => setOpen(!open)}
+                    onClick={() => {setOpen(!open); setSelectedHost(host)}}
                     fontSize="medium"
                   />
                 </StyledTableCell>

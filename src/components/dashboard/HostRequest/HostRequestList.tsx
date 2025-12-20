@@ -10,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import { useGetHostRequestsQuery } from "../../../redux/features/host/hostApi";
 
 const imageURL =
   "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg";
@@ -173,6 +174,11 @@ type props = {
 const HostRequestList = ({ open, setOpen }: props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const {data: requestsData, isLoading} = useGetHostRequestsQuery({})
+
+  console.log("requestsData",requestsData[0]);
+  
+
 
   const handleChangePage = (event: unknown, newPage: number) => {
     console.log("event", event);

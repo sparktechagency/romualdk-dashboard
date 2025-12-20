@@ -4,21 +4,32 @@ import { baseApi } from "../../base/baseAPI";
 
 const hostApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    // GET all hosts
+
+    getHostRequests: build.query({
+      query: () => "/users/host",
+      providesTags: ["host"],
+      transformResponse: (res: { data: any }) => res.data,
+    }),
+    
+    getHostRequestsById: build.query({
+      query: (id: string) => `/users/host/${id}`,
+      providesTags: ["host"],
+      transformResponse: (res: { data: any }) => res.data,
+    }),
+    
+    
     getHosts: build.query({
       query: () => "/users/host",
       providesTags: ["host"],
       transformResponse: (res: { data: any }) => res.data,
     }),
-
-    // GET single host by ID
+    
     getHostById: build.query({
       query: (id: string) => `/users/host/${id}`,
       providesTags: ["host"],
       transformResponse: (res: { data: any }) => res.data,
     }),
-
-    // UPDATE host (PATCH)
+    
     updateHost: build.mutation({
       query: ({ id, formData }: { id: string; formData: any }) => ({
         url: `/users/host/${id}`,
@@ -27,8 +38,7 @@ const hostApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["host"],
     }),
-
-    // DELETE host
+    
     deleteHost: build.mutation({
       query: (id: string) => ({
         url: `/users/host/${id}`,
@@ -44,6 +54,8 @@ export const {
   useGetHostByIdQuery,
   useUpdateHostMutation,
   useDeleteHostMutation,
+  useGetHostRequestsQuery,
+  useGetHostRequestsByIdQuery
 } = hostApi;
 
 export default hostApi;
