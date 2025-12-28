@@ -65,15 +65,15 @@ const FAQ = () => {
       {/* FAQ List */}
       {faqData?.map((faq: any, index: number) => (
         <Accordion key={faq._id || index} defaultExpanded={index === 0}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{background: "var(--color-primary)"}}>
+          <AccordionSummary  expandIcon={<ExpandMoreIcon />} sx={{paddingBlock: "0px",  background: "var(--color-primary)"}}>
             <Box
               display="flex"
               justifyContent="space-between"
               alignItems="center"
               width="100%" 
-              sx={{paddingInline: "2px"}}                        
+              sx={{paddingBlock: "0px"}}                        
             >
-              <Typography variant="h5">{faq.question}</Typography>
+              <p >{faq.question}</p>
 
               <Box display="flex" gap={1}>
                 <IconButton
@@ -83,7 +83,7 @@ const FAQ = () => {
                     setEditData(faq);
                   }}
                 >
-                  <FiEdit />
+                  <FiEdit size={20} />
                 </IconButton>
 
                 <IconButton
@@ -93,7 +93,7 @@ const FAQ = () => {
                     setSelectedFaq(faq);
                   }}
                 >
-                  <GoTrash className="text-red-500" />
+                  <GoTrash size={20} className="text-red-500" />
                 </IconButton>
               </Box>
             </Box>
