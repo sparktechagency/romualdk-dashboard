@@ -1,13 +1,12 @@
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import {
   Avatar,
   Badge,
-  IconButton,
   Box,
-  Typography,
+  Typography
 } from "@mui/material";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import { useGetProfileQuery } from "../../redux/features/auth/authApi";
 import { imageUrl } from "../../redux/base/baseAPI";
+import { useGetProfileQuery } from "../../redux/features/auth/authApi";
 
 const DashboardHeader = () => {
   const { data: profileData } = useGetProfileQuery(undefined);

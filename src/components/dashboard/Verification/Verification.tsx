@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -18,14 +17,14 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import React, { useEffect, useState } from "react";
 
-import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { FaLock, FaSearch } from "react-icons/fa";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { MdMoreVert } from "react-icons/md";
-import MuiImageViewer from "../../shared/MuiImageViewer";
-import { useGetVerificationQuery, useUpdateVerificationMutation } from "../../../redux/features/verification/verificationApi";
 import { imageUrl } from "../../../redux/base/baseAPI";
+import { useGetVerificationQuery, useUpdateVerificationMutation } from "../../../redux/features/verification/verificationApi";
+import MuiImageViewer from "../../shared/MuiImageViewer";
 
 import { getSearchParams } from "../../../utils/getSearchParams";
 import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
@@ -57,14 +56,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Verification = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [searchText, setSearchText] = useState("");
-
-  const { searchTerm } = getSearchParams();
+  const { searchTerm, page, limit } = getSearchParams();
   const updateSearchParams = useUpdateSearchParams();
 
+  //@ts-ignore
+  const [currentPage, setCurrentPage] = useState(Math.max(0, (page || 1) - 1));
+  const [rowsPerPage, setRowsPerPage] = useState(limit || 5);
+  const [searchText, setSearchText] = useState(searchTerm || "");
+
+  // KEEP THIS (No change needed):
   const { data: verificationData, refetch } = useGetVerificationQuery({});
+
   const [updateVerification] = useUpdateVerificationMutation();
 
   // For menu per row
@@ -73,25 +75,31 @@ const Verification = () => {
     id: null,
   });
 
+  // Sync local state when URL params change
   useEffect(() => {
-    setSearchText(searchTerm);
-    refetch()
-  }, [searchTerm]);
+    //@ts-ignore   
+    refetch();
+  }, [searchTerm, page, limit, refetch]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const search = e.target.value;
-    setSearchText(search);
-    updateSearchParams({ searchTerm: search });
-  };
+// AFTER:
+const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const search = e.target.value;
+  setSearchText(search);
+  updateSearchParams({ searchTerm: search, page: 1 });
+};
 
-  const handleChangePage = (_event: unknown, newPage: number) => {
-    setCurrentPage(newPage);
-  };
+const handleChangePage = (_event: unknown, newPage: number) => {
+  const apiPage = newPage + 1;
+  setCurrentPage(newPage);
+  updateSearchParams({ page: apiPage });
+};
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(0);
-  };
+const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const newLimit = parseInt(event.target.value, 10);
+  setRowsPerPage(newLimit);
+  setCurrentPage(0);
+  updateSearchParams({ limit: newLimit, page: 1 });
+};
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
     setMenuAnchor({ anchor: event.currentTarget, id });
@@ -141,9 +149,9 @@ const Verification = () => {
               <StyledTableCell>Contact</StyledTableCell>
               <StyledTableCell>Location</StyledTableCell>
               <StyledTableCell>Car Brand</StyledTableCell>
-              <StyledTableCell>Car Model</StyledTableCell>              
-              <StyledTableCell>Car Year</StyledTableCell>              
-              <StyledTableCell>License Plate</StyledTableCell>              
+              <StyledTableCell>Car Model</StyledTableCell>
+              <StyledTableCell>Car Year</StyledTableCell>
+              <StyledTableCell>License Plate</StyledTableCell>
               <StyledTableCell>Registration Pic (Front)</StyledTableCell>
               <StyledTableCell>Registration Pic (Back)</StyledTableCell>
               <StyledTableCell>Verification Status</StyledTableCell>
@@ -152,11 +160,12 @@ const Verification = () => {
           </TableHead>
 
           <TableBody>
-            {verificationData?.data?.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage).map((row: any) => (
+            {/* Remove local slicing - API handles pagination */}
+            {verificationData?.data?.map((row: any) => (
               <StyledTableRow key={row._id}>
                 <TableCell>{row.userId?.fullName}</TableCell>
                 <TableCell>
-                  <Typography>{row.userId?.phone}</Typography>                  
+                  <Typography>{row.userId?.phone}</Typography>
                 </TableCell>
                 <TableCell>{row.city}</TableCell>
                 <TableCell>{row.brand}</TableCell>
@@ -224,7 +233,8 @@ const Verification = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={verificationData?.data?.length || 0}
+          count={verificationData?.meta?.total || 0}
+          //@ts-ignore
           rowsPerPage={rowsPerPage}
           page={currentPage}
           onPageChange={handleChangePage}

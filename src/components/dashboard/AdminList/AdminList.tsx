@@ -1,173 +1,223 @@
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Button, Space, Table, Tooltip } from "antd";
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Lock as LockIcon,
+  LockOpen as LockOpenIcon
+} from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  IconButton,
+  Paper,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { CiLock, CiUnlock } from "react-icons/ci";
 import {
   useCreateAdminMutation,
   useDeleteUserMutation,
   useGetAdminQuery,
-  useUpdateUserMutation,
+  useUpdateAdminStatusMutation
 } from "../../../redux/features/user/userApi";
 import ConfirmModal from "../../UI/ConfirmModel";
 import AddAdminModal from "./AddAdminModal";
 
+
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+  "& td, & th": {
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#3ab8bb",
+    color: theme.palette.common.white,
+    fontWeight: 500,
+    fontSize: 18,
+    textAlign: "start",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 16,
+  },
+}));
+
 const AdminList = () => {
-  const { data: adminData, refetch } = useGetAdminQuery(undefined);
-  const [updateUser] = useUpdateUserMutation();
+  const { data: adminData, refetch, isLoading } = useGetAdminQuery(undefined);
   const [deleteUser] = useDeleteUserMutation();
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [open, setOpen] = useState(false);
-  const [createAdmin] = useCreateAdminMutation();
-
-  const handleUpdateStatus = async (record: any) => {
-    try {
-      const data = {
-        id: record?._id,
-        status: record?.status == "ACTIVE" ? "INACTIVE" : "ACTIVE",
-      };
-      const res = await updateUser(data).unwrap();
-
-      toast.success(res?.data?.message);
-    } catch (error : any) {
-      toast.error(error?.data?.message);
-    }
-  };
+  const [createAdmin] = useCreateAdminMutation();  
+  const [updateAdminStatus] = useUpdateAdminStatusMutation();
+  
 
   const handleDeleteAdmin = async () => {
     try {
-      // @ts-ignore
       const res = await deleteUser(selectedUser?._id).unwrap();
-      console.log("delete", res);
+      console.log("res", res);
       
-      toast.success("Admin delete Success");
+      toast.success("Admin deleted successfully");
       setSelectedUser(null);
       setOpenConfirm(false);
-    } catch (error : any) {     
-      console.log("update", error);
-      
+      refetch();
+    } catch (error: any) {
       toast.error(error?.data?.message);
     }
   };
-  const columns = [
-    {
-      title: "SL No",
-      dataIndex: "slNo",
-      key: "slNo",
-      render: (_: any, __: any, index: any) => index + 1,
-      width: 80,
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      render: (text: string) => text.split("_").join(" "),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (text: string) => (
-        <span
-          className={`${
-            text == "ACTIVE" ? "text-green-500" : "text-red-400"
-          } font-semibold`}
-        >
-          {text}
-        </span>
-      ),
-    },
-    {
-      title: "Join Date",
-      dataIndex: "joinDate",
-      key: "joinDate",
-      render: (text: string) => dayjs(text).format("DD MMM, YY"),
-    },
 
-    {
-      title: "Action",
-      key: "action",
-      width: 130,
-      render: (_: any, record: any) => (
-        <Space size="middle">
-          <Tooltip title="View">
-            <EyeOutlined
-              size={20}
-              style={{ color: "#1890ff", cursor: "pointer" }}
-              onClick={() => {}}
-            />
-          </Tooltip>
-          <Tooltip title={record?.status == "Active" ? "Active" : "Banned"}>
-            <div className="" onClick={() => handleUpdateStatus(record)}>
-              {record?.status?.toLowerCase() == "active" ? (
-                <CiUnlock
-                  size={20}
-                  style={{ color: "green", cursor: "pointer" }}
-                  onClick={() => console.log("Banned:", record)}
-                />
-              ) : (
-                <CiLock
-                  size={20}
-                  style={{ color: "red", cursor: "pointer" }}
-                  onClick={() => console.log("Banned:", record)}
-                />
-              )}
-            </div>
-          </Tooltip>
-          <DeleteOutlined
-            size={20}
-            style={{ color: "red", cursor: "pointer" }}
-            onClick={() => {
-              setSelectedUser(record);
-              setOpenConfirm(true);
-            }}
-          />
-        </Space>
-      ),
-    },
-  ];
-
-  const handleUpdateAdmin = async (values: any) => {
+  const handleAddAdmin = async (values: any) => {
     try {
-      await createAdmin(values).unwrap();        
-      toast.success("Admin created Success")
-      refetch();
+      const res = await createAdmin(values).unwrap();
+      console.log("resres", res);
+      
 
-    } catch (error) {
-      console.log("error", error);
+      toast.success("Admin created successfully");
+      refetch();
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message);
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "ACTIVE":
+        return "success";
+      case "INACTIVE":
+        return "error";
+      default:
+        return "default";
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const handleToggleStatusPage = async (row: any) => {
+    try {
+      await updateAdminStatus({ id:row?._id, status: row?.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }).unwrap();
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }    
+  };
+
   return (
-    <div className="bg-white rounded-xl p-6 h-full">
-      <div className="flex items-center justify-between mb-6 ">
-        <h1 className="text-2xl text-primary font-semibold">
+    <Box sx={{ bgcolor: 'background.paper', borderRadius: 2, p: 3, height: '100%' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h5" component="h1" color="primary" fontWeight="medium">
           Admin Management
-        </h1>
-        <Button onClick={() => setOpen(true)} type="primary" size="large">
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setOpen(true)}
+          size="large"
+        >
           Add Admin
         </Button>
-      </div>
+      </Box>
 
-      <Table
-        dataSource={adminData}
-        columns={columns}
-        bordered
-        pagination={{ pageSize: 10 }}
-      />
+      <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Table>
+          <TableHead sx={{ bgcolor: 'action.hover' }}>
+            <StyledTableRow>
+              <StyledTableCell sx={{ fontWeight: 'bold' }}>SL No</StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 'bold' }}>Name</StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 'bold' }}>Email</StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 'bold' }}>Role</StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 'bold' }}>Status</StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 'bold' }}>Join Date</StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 'bold', width: 130 }}>Actions</StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {adminData?.data?.map((row: any, index: number) => (
+              <TableRow key={row._id} hover>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{row.fullName}</TableCell>
+                <TableCell>{row.email}</TableCell>
+                <TableCell>
+                  {row.role?.split("_").join(" ") || row.role}
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    label={row.status}
+                    color={getStatusColor(row.status)}
+                    size="small"
+                    sx={{ fontWeight: 500 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  {dayjs(row.joinDate).format("DD MMM, YY")}
+                </TableCell>
+                <TableCell>
+                  <Box display="flex" gap={1}>
+                    <Tooltip title={row.status === "ACTIVE" ? "Deactivate" : "Activate"}>
+                      <IconButton
+                        size="small"
+                        disabled={row?.role === "SUPER_ADMIN"}
+                        color={row.status === "ACTIVE" ? "success" : "error"}
+                        onClick={() => handleToggleStatusPage(row)}
+                      >
+                        {row.status === "ACTIVE" ? (
+                          <LockOpenIcon fontSize="small" />
+                        ) : (
+                          <LockIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        disabled={row?.role === "SUPER_ADMIN"}
+                        size="small"
+                        color="error"
+                        onClick={() => {
+                          setSelectedUser(row);
+                          setOpenConfirm(true);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       <ConfirmModal
         open={openConfirm}
         title="Delete Admin?"
-        content={`Are you sure you want to delete "${
-          (selectedUser as any)?.name
-        } Admin"?`}
+        content={`Are you sure you want to delete "${selectedUser?.fullName} Admin"?`}
         okText="Yes, Delete"
         cancelText="Cancel"
         onConfirm={handleDeleteAdmin}
@@ -177,13 +227,12 @@ const AdminList = () => {
         }}
       />
 
-      <AddAdminModal
-        editData={selectedUser}
+      <AddAdminModal        
         open={open}
         setOpen={setOpen}
-        onSubmit={handleUpdateAdmin}
+        onSubmit={handleAddAdmin}
       />
-    </div>
+    </Box>
   );
 };
 

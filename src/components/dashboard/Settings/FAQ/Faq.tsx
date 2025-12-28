@@ -65,14 +65,15 @@ const FAQ = () => {
       {/* FAQ List */}
       {faqData?.map((faq: any, index: number) => (
         <Accordion key={faq._id || index} defaultExpanded={index === 0}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{background: "var(--color-primary)"}}>
             <Box
               display="flex"
               justifyContent="space-between"
               alignItems="center"
-              width="100%"
+              width="100%" 
+              sx={{paddingInline: "2px"}}                        
             >
-              <Typography fontWeight={500}>{faq.question}</Typography>
+              <Typography variant="h5">{faq.question}</Typography>
 
               <Box display="flex" gap={1}>
                 <IconButton

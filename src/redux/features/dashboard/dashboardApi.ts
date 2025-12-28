@@ -9,12 +9,16 @@ const dashboardApi = baseApi.injectEndpoints({
         getUsersGrowth:  builder.query({
             query: ()=>`/analytics/yearly${location?.search}`,            
         }),
+        getRevenueGrowth:  builder.query({
+            query: ()=>`/transactions/platform-revenue`,       
+            transformResponse: (res: {data: any})=> res?.data     
+        }),
         getOverView: builder.query({
             query: ()=>`/analytics/overview`,
             transformResponse: (res: {data: any})=> res?.data
-        }),
-        getRevenueGrowth: builder.query({
-            query: ()=>`/analytics/revenue-growth`,
+        }),        
+        getBookingChart: builder.query({
+            query: ()=>`/bookings/status-stats?year=2025&month=12`,
             transformResponse: (res: {data: any})=> res?.data
         })
     })
@@ -24,5 +28,6 @@ export const {
     useGetAnalyticsQuery,
     useGetUsersGrowthQuery,
     useGetOverViewQuery,
+    useGetBookingChartQuery,
     useGetRevenueGrowthQuery
 } = dashboardApi;

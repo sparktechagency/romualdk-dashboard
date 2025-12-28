@@ -17,6 +17,7 @@ import Payments from "../dashboard/Payments/Payments";
 import Settings from "../dashboard/Settings/Settings";
 import Verification from "../dashboard/Verification/Verification";
 import PrivateRoute from "./PrivateRoute";
+import AdminList from "../dashboard/AdminList/AdminList";
 
 const router = createBrowserRouter([
     {
@@ -67,10 +68,10 @@ const router = createBrowserRouter([
                 path: "settings",
                 element: <Settings />
             },
-            // {
-            //     path: "all-admin",
-            //     element: <AdminList />
-            // },
+            {
+                path: "admin-manage",
+                element: <AdminList />
+            },
             // {
             //     path: "terms-condition",
             //     element: <TermsCondition />

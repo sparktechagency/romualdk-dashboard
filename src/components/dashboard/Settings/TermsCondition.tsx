@@ -10,7 +10,7 @@ const TermsCondition = () => {
   const [content, setContent] = useState("");
   const [showEditor, setShowEditor] = useState(false);
   const { data: termsData, refetch } = useGetTermsConditionQuery(undefined);
-  const [addDisclaimer, {isLoading}] = useAddDisclaimerMutation()
+  const [addDisclaimer ] = useAddDisclaimerMutation()
   
   useEffect(()=>{
     setContent(termsData?.data?.content)

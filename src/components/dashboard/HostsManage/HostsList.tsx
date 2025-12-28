@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import {
+  IconButton,
+  Menu,
+  MenuItem,
+  Paper,
+  styled,
   Table,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableContainer,
   TableHead,
-  TableRow,
-  Paper,
   TablePagination,
-  Typography,
-  Button,
-  styled,
-  tableCellClasses,
+  TableRow,
+  Typography
 } from "@mui/material";
-import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import React, { useEffect, useState } from "react";
+import { FaLock } from "react-icons/fa";
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { MdMoreVert } from "react-icons/md";
+import { useGetHostsQuery, useUpdateHostStatusMutation } from "../../../redux/features/host/hostApi";
 import MuiImageViewer from "../../shared/MuiImageViewer";
 import { imageUrl } from "../../../redux/base/baseAPI";
-import { useGetHostsQuery } from "../../../redux/features/host/hostApi";
+import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import TableSkeleton from "../../shared/TableSkeleton";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -43,20 +51,60 @@ type props = {
 const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { searchTerm, page, limit } = getSearchParams();
+  const updateSearchParams = useUpdateSearchParams();
 
-  const { data: hostsData, isLoading } = useGetHostsQuery({});
+  const { data: hostsData, isLoading, refetch } = useGetHostsQuery({});
+  const [updateHostStatus] = useUpdateHostStatusMutation()
 
-  console.log("hostsData", hostsData);
-  
+  const [menuAnchor, setMenuAnchor] = useState<{ anchor: HTMLElement | null; id: string | null }>({
+    anchor: null,
+    id: null,
+  });
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setCurrentPage(newPage);
+
+
+  // Sync local state with URL params
+  useEffect(() => {
+    // @ts-ignore
+    setCurrentPage(Math.max(0, (page || 1) - 1));
+    setRowsPerPage(Number(limit) || 10);
+    refetch();
+  }, [page, limit, searchTerm]);
+
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
+    setMenuAnchor({ anchor: event.currentTarget, id });
   };
+
+  const handleMenuClose = () => {
+    setMenuAnchor({ anchor: null, id: null });
+  };
+
+  const handleToggleStatusPage = async (status: string, id: string) => {
+    try {
+      await updateHostStatus({ status, id }).unwrap();
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+    handleMenuClose();
+  };
+
+  const handleChangePage = ( newPage: number) => {
+    const apiPage = newPage + 1;
+    setCurrentPage(newPage);
+    updateSearchParams({ page: apiPage });
+  };
+
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(0);
+    const newLimit = parseInt(event.target.value, 10);
+    setRowsPerPage(newLimit);
+    setCurrentPage(0); // Reset to first page (0-based)
+    updateSearchParams({ limit: newLimit, page: 1 }); // Reset to first page (1-based for API)
   };
+
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -70,12 +118,12 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
             <StyledTableCell align="right">Location</StyledTableCell>
             <StyledTableCell align="right">NID Front</StyledTableCell>
             <StyledTableCell align="right">NID Back</StyledTableCell>
-            <StyledTableCell align="right">Host Status</StyledTableCell>
+            <StyledTableCell align="right">Status</StyledTableCell>
             <StyledTableCell align="right">Action</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {hostsData?.data
+          {isLoading ? <TableSkeleton rows={Number(rowsPerPage)} cols={7} /> : hostsData?.data
             ?.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage)
             .map((host: any) => (
               <StyledTableRow key={host._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -91,7 +139,7 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
 
                 {/* Location */}
                 <StyledTableCell>
-                  {host?.city ?? "N/A" }
+                  {host?.city ?? "N/A"}
                 </StyledTableCell>
 
                 {/* NID Front */}
@@ -106,35 +154,49 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
 
                 {/* Host Status */}
                 <StyledTableCell >
-                  <Button
-                    variant="contained"
-                    sx={{
+
+                  <span
+                    style={{
                       backgroundColor:
-                        host.hostStatus === "APPROVED"
-                          ? "green"
-                          : host.hostStatus === "PENDING"
-                          ? "#ED6C02"
-                          : host.hostStatus === "REJECTED"
-                          ? "red"
-                          : "#F0F0F0",
-                      color: "white",
+                        host?.status === "ACTIVE" ? "#E6F7E6" : "#FFE6E6",
+                      color: host?.status === "ACTIVE" ? "#2E7D32" : "#D32F2F",
                       padding: "4px 12px",
+                      borderRadius: 20,
                       fontSize: 13,
                       fontWeight: 500,
-                      boxShadow: "none",
+                      textTransform: "uppercase"
                     }}
                   >
-                    {host.hostStatus}
-                  </Button>
+                    {host?.status === "ACTIVE" ? host?.status : "Blocked"}
+                  </span>
                 </StyledTableCell>
 
                 {/* Action */}
                 <StyledTableCell >
                   <RemoveRedEyeOutlinedIcon
                     className="cursor-pointer"
-                    onClick={() => {setOpen(!open); setSelectedHost(host)}}
+                    onClick={() => { setOpen(!open); setSelectedHost(host) }}
                     fontSize="medium"
                   />
+
+                  <IconButton onClick={(e) => handleMenuClick(e, host._id)}>
+                    <MdMoreVert />
+                  </IconButton>
+                  <Menu
+                    anchorEl={menuAnchor.anchor}
+                    open={menuAnchor.id === host._id && Boolean(menuAnchor.anchor)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem disabled={host.status === "ACTIVE"} onClick={() => handleToggleStatusPage("ACTIVE", host._id)}>
+                      <IoCheckmarkDoneOutline className="text-green-500" style={{ marginRight: 8 }} />
+                      Active
+                    </MenuItem>
+
+                    <MenuItem disabled={host?.status === "INACTIVE"} onClick={() => handleToggleStatusPage("INACTIVE", host._id)}>
+                      <FaLock className="text-red-500" style={{ marginRight: 8 }} />
+                      Blocked
+                    </MenuItem>
+                  </Menu>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -143,9 +205,10 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={hostsData?.data?.length || 0}
+        count={hostsData?.meta?.total || 0}
         rowsPerPage={rowsPerPage}
         page={currentPage}
+        // @ts-ignore
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Box, IconButton, Dialog, DialogContent } from "@mui/material";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import CloseIcon from "@mui/icons-material/Close";
+import { Box, Dialog, DialogContent, IconButton } from "@mui/material";
+import React, { useState } from "react";
 
 interface MuiImageViewerProps {
   src: string;

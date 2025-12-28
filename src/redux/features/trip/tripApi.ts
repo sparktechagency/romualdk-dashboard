@@ -2,14 +2,7 @@ import { baseApi } from "../../base/baseAPI";
 
 const tripApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // getTrips: builder.query({
-    //   query: () => {
-    //     return {
-    //       url: `/trips${location.search}`,
-    //       method: "GET",
-    //     };
-    //   },
-    // }),    
+
     getTrips: builder.query({
       query: () => {
         return {

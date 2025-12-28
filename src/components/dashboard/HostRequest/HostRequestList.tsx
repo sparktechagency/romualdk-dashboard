@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { styled, TablePagination } from "@mui/material";
+import { Button, IconButton, Menu, MenuItem, styled, TablePagination } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,12 +9,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import { useGetHostRequestsQuery } from "../../../redux/features/host/hostApi";
-
-const imageURL =
-  "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg";
-const hostImage = "/placeholder.png";
+import { FaLock } from "react-icons/fa";
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { MdMoreVert } from "react-icons/md";
+import { imageUrl } from "../../../redux/base/baseAPI";
+import { useGetHostRequestsQuery, useUpdateHostRequestStatusMutation } from "../../../redux/features/host/hostApi";
+import MuiImageViewer from "../../shared/MuiImageViewer";
+import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import TableSkeleton from "../../shared/TableSkeleton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,7 +36,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -43,155 +45,64 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const hostsData = [
-  {
-    sl: 1,
-    property: { name: "Mercedes-Benz", image: imageURL },
-    host: { name: "Samuel Johnsons", image: hostImage, email: "abc@gmail.com" },
+const HostRequestList = () => {
+  const { searchTerm, page, limit } = getSearchParams();
+  const updateSearchParams = useUpdateSearchParams();
 
-    location: "Buffalo, New York",
-    status: "Completed",
-  },
-  {
-    sl: 2,
-    property: { name: "BMW X5", image: imageURL },
-    host: { name: "Emily Carter", image: hostImage, email: "abc@gmail.com" },
+  // @ts-ignore
+  const [currentPage, setCurrentPage] = useState(Math.max(0, (page || 1) - 1));
+  const [rowsPerPage, setRowsPerPage] = useState(limit || 10);
 
-    location: "Los Angeles, California",
-    status: "Pending",
-  },
-  {
-    sl: 3,
-    property: { name: "Audi A6", image: imageURL },
-    host: { name: "Michael Brown", image: hostImage, email: "abc@gmail.com" },
+  const { data: requestsData, isLoading, refetch } = useGetHostRequestsQuery({});
+  const [updateHostRequestStatus] = useUpdateHostRequestStatusMutation();
 
-    location: "Miami, Florida",
-    status: "Completed",
-  },
-  {
-    sl: 4,
-    property: { name: "Tesla Model 3", image: imageURL },
-    host: { name: "Sophia Turner", image: hostImage, email: "abc@gmail.com" },
+  // For menu per row
+  const [menuAnchor, setMenuAnchor] = useState<{ anchor: HTMLElement | null; id: string | null }>({
+    anchor: null,
+    id: null,
+  });
 
-    location: "Dallas, Texas",
-    status: "Cancelled",
-  },
-  {
-    sl: 5,
-    property: { name: "Lexus RX 350", image: imageURL },
-    host: { name: "William Harris", image: hostImage, email: "abc@gmail.com" },
+  // Sync local state with URL params
+  useEffect(() => {
+    // @ts-ignore
+    setCurrentPage(Math.max(0, (page || 1) - 1));
+    setRowsPerPage(limit || 10);
+    refetch();
+  }, [page, limit, searchTerm]);
 
-    location: "Seattle, Washington",
-    status: "Completed",
-  },
-  {
-    sl: 6,
-    property: { name: "Toyota Supra", image: imageURL },
-    host: { name: "Isabella Lewis", image: hostImage, email: "abc@gmail.com" },
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
+    setMenuAnchor({ anchor: event.currentTarget, id });
+  };
 
-    location: "Austin, Texas",
-    status: "Pending",
-  },
-  {
-    sl: 7,
-    property: { name: "Ford Mustang", image: imageURL },
-    host: { name: "James Wilson", image: hostImage, email: "abc@gmail.com" },
+  const handleMenuClose = () => {
+    setMenuAnchor({ anchor: null, id: null });
+  };
 
-    location: "Denver, Colorado",
-    status: "Completed",
-  },
-  {
-    sl: 8,
-    property: { name: "Chevrolet Camaro", image: imageURL },
-    host: { name: "Olivia Martinez", image: hostImage, email: "abc@gmail.com" },
+  const handleToggleStatusPage = async (status: string, id: string) => {
+    try {
+      await updateHostRequestStatus({ id, hostStatus: status }).unwrap();
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+    handleMenuClose();
+  };
 
-    location: "Chicago, Illinois",
-    status: "Rejected",
-  },
-  {
-    sl: 9,
-    property: { name: "Honda Civic", image: imageURL },
-    host: { name: "Benjamin Clark", image: hostImage, email: "abc@gmail.com" },
-
-    location: "Phoenix, Arizona",
-    status: "Completed",
-  },
-  {
-    sl: 10,
-    property: { name: "Porsche 911", image: imageURL },
-    host: { name: "Charlotte White", image: hostImage, email: "abc@gmail.com" },
-
-    location: "San Francisco, California",
-    status: "Pending",
-  },
-  // {
-  //   sl: 11,
-  //   property: { name: "Nissan GTR", image: imageURL },
-  //   host: { name: "Ethan Taylor", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Las Vegas, Nevada",
-  //   status: "Completed",
-  // },
-  // {
-  //   sl: 12,
-  //   property: { name: "Jaguar XF", image: imageURL },
-  //   host: { name: "Amelia Walker", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Portland, Oregon",
-  //   status: "Cancelled",
-  // },
-  // {
-  //   sl: 13,
-  //   property: { name: "Volvo XC90", image: imageURL },
-  //   host: { name: "Logan Davis", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Atlanta, Georgia",
-  //   status: "Completed",
-  // },
-  // {
-  //   sl: 14,
-  //   property: { name: "Ferrari Roma", image: imageURL },
-  //   host: { name: "Mia Robinson", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "New York City, New York",
-  //   status: "Pending",
-  // },
-  // {
-  //   sl: 15,
-  //   property: { name: "Lamborghini Urus", image: imageURL },
-  //   host: { name: "Alexander Thompson", image: hostImage, email: "abc@gmail.com", },
-  //
-  //   location: "Houston, Texas",
-  //   status: "Completed",
-  // },
-];
-
-type props = {
-  open: boolean;
-  setOpen: any;
-};
-
-const HostRequestList = ({ open, setOpen }: props) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const {data: requestsData, isLoading} = useGetHostRequestsQuery({})
-
-  console.log("requestsData",requestsData[0]);
-  
-
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    console.log("event", event);
-    
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    // Convert 0-based MUI page to 1-based API page
+    const apiPage = newPage + 1;
     setCurrentPage(newPage);
+    updateSearchParams({ page: apiPage });
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(0);
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newLimit = parseInt(event.target.value, 10);
+    setRowsPerPage(newLimit);
+    setCurrentPage(0); // Reset to first page (0-based)
+    updateSearchParams({ limit: newLimit, page: 1 }); // Reset to first page (1-based for API)
   };
+
+
 
   return (
     <TableContainer component={Paper}>
@@ -199,104 +110,112 @@ const HostRequestList = ({ open, setOpen }: props) => {
         <TableHead>
           <StyledTableRow>
             <StyledTableCell>Host Lists</StyledTableCell>
-            <StyledTableCell align="right">Email</StyledTableCell>
-            <StyledTableCell align="right">Car</StyledTableCell>
+            <StyledTableCell align="right">Contact</StyledTableCell>
+            <StyledTableCell align="right">Location</StyledTableCell>
+            <StyledTableCell align="right">Driving Licen. (Front)</StyledTableCell>
+            <StyledTableCell align="right">Driving Licen. (Back)</StyledTableCell>
             <StyledTableCell align="right">Status</StyledTableCell>
             <StyledTableCell align="right">Action</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {hostsData?.map((row, index) => (
-            <StyledTableRow
-              key={index}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              {/* Property */}
-              <TableCell component="th" scope="row">
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <img
-                    src={row.host.image}
-                    alt={row.host.name}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 8,
-                      objectFit: "cover",
+          {isLoading ? <TableSkeleton rows={Number(rowsPerPage)} cols={7} /> : requestsData?.data && requestsData.data.length > 0 ? (
+            requestsData.data.map((row: any, index: number) => (
+              <StyledTableRow
+                key={row._id || index}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                {/* Host Name */}
+                <TableCell component="th" scope="row">
+                  <strong>{`${row.firstName} ${row.lastName}`}</strong>
+                </TableCell>
+
+                {/* Contact */}
+                <TableCell align="left">
+                  {row.countryCode}
+                  {row.phone}
+                </TableCell>
+
+                {/* Location */}
+                <TableCell align="left">{row?.city ?? "N/A"}</TableCell>
+
+                {/* Driving License Front */}
+                <TableCell align="left">
+                  <MuiImageViewer width={60} src={`${imageUrl}${row.drivingLicenseFrontPic}`} alt="Front" />
+                </TableCell>
+
+                {/* Driving License Back */}
+                <TableCell align="left">
+                  <MuiImageViewer width={60} src={`${imageUrl}${row.drivingLicenseBackPic}`} alt="Back" />
+                </TableCell>
+
+                {/* Status */}
+                <TableCell align="left">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor:
+                        row.hostStatus === "APPROVED"
+                          ? "green"
+                          : row.hostStatus === "PENDING"
+                            ? "#ED6C02"
+                            : row.hostStatus === "REJECTED"
+                              ? "red"
+                              : "#F0F0F0",
+                      color: "white",
+                      padding: "4px 12px",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      boxShadow: "none",
                     }}
-                  />
-                  <span>{row.property.name}</span>
-                </div>
-              </TableCell>
+                  >
+                    {row.hostStatus}
+                  </Button>
+                </TableCell>
 
-              {/* Host */}
-              <TableCell align="left">
-                <span>{row?.host?.email}</span>
-              </TableCell>
+                {/* Action */}
+                <TableCell>
+                  <IconButton onClick={(e) => handleMenuClick(e, row._id)}>
+                    <MdMoreVert />
+                  </IconButton>
+                  <Menu
+                    anchorEl={menuAnchor.anchor}
+                    open={menuAnchor.id === row._id && Boolean(menuAnchor.anchor)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem
+                      disabled={row.hostStatus === "APPROVED"}
+                      onClick={() => handleToggleStatusPage("APPROVED", row._id)}
+                    >
+                      <IoCheckmarkDoneOutline className="text-green-500" style={{ marginRight: 8 }} />
+                      Approved
+                    </MenuItem>
 
-              <TableCell component="th" scope="row">
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <img
-                    src={row.property.image}
-                    alt={row.property.name}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 8,
-                      objectFit: "cover",
-                    }}
-                  />
-                  <span>{row.property.name}</span>
-                </div>
-              </TableCell>
-
-              
-
-              {/* Status */}
-              <TableCell align="left">
-                <span
-                  style={{
-                    backgroundColor:
-                      row.status === "Completed"
-                        ? "#E6F7E6"
-                        : row.status === "Pending"
-                        ? "#FFF4E6"
-                        : row.status === "Cancelled"
-                        ? "#FFE6E6"
-                        : "#F0F0F0",
-                    color:
-                      row.status === "Completed"
-                        ? "#2E7D32"
-                        : row.status === "Pending"
-                        ? "#ED6C02"
-                        : row.status === "Cancelled"
-                        ? "#D32F2F"
-                        : "#616161",
-                    padding: "4px 12px",
-                    borderRadius: 20,
-                    fontSize: 13,
-                    fontWeight: 500,
-                  }}
-                >
-                  {row.status}
-                </span>
-              </TableCell>
-              {/* Location */}
-              <TableCell align="left">
-                {" "}
-                <RemoveRedEyeOutlinedIcon
-                  className="cursor-pointer"
-                  onClick={() => setOpen(!open)}
-                  fontSize="medium"
-                />{" "}
+                    <MenuItem
+                      disabled={row.hostStatus === "REJECTED"}
+                      onClick={() => handleToggleStatusPage("REJECTED", row._id)}
+                    >
+                      <FaLock className="text-red-500" style={{ marginRight: 8 }} />
+                      Reject
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
+              </StyledTableRow>
+            ))
+          ) : (
+            <StyledTableRow>
+              <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
+                No host requests found
               </TableCell>
             </StyledTableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={hostsData?.length}
+        count={requestsData?.meta?.total || 0}
+        // @ts-ignore
         rowsPerPage={rowsPerPage}
         page={currentPage}
         onPageChange={handleChangePage}

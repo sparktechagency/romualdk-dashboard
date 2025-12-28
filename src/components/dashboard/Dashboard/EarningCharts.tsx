@@ -17,27 +17,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useGetRevenueGrowthQuery } from "../../../redux/features/dashboard/dashboardApi";
 
 const currentYear = new Date().getFullYear();
 
 const EarningCharts = () => {
   // Demo Data for Earnings (replace this with actual API data later)
   const [selectedYear, setSelectedYear] = useState("");
-
-  const demoEarningsData = [
-    { month: "Jan", earnings: 12000 },
-    { month: "Feb", earnings: 15000 },
-    { month: "Mar", earnings: 13000 },
-    { month: "Apr", earnings: 17000 },
-    { month: "May", earnings: 16000 },
-    { month: "Jun", earnings: 18000 },
-    { month: "Jul", earnings: 19000 },
-    { month: "Aug", earnings: 22000 },
-    { month: "Sep", earnings: 21000 },
-    { month: "Oct", earnings: 24000 },
-    { month: "Nov", earnings: 25000 },
-    { month: "Dec", earnings: 27000 },
-  ];
+  const {data: revenueData} = useGetRevenueGrowthQuery({});
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     const isVisible = active && payload && payload.length;
@@ -124,7 +111,7 @@ const EarningCharts = () => {
         </div>
         <ResponsiveContainer width="100%" height={260}>
           <AreaChart
-            data={demoEarningsData}
+            data={revenueData?.monthly}
             margin={{ left: 0, top: 20, right: 10, bottom: 0 }}
           >
             <defs>
@@ -134,7 +121,7 @@ const EarningCharts = () => {
               </linearGradient>
             </defs>
             <XAxis
-              dataKey="month"
+              dataKey="monthName"
               stroke="none"
               axisLine={false}
               tickLine={false}
@@ -145,7 +132,7 @@ const EarningCharts = () => {
             <Tooltip wrapperStyle={{ width: 100 }} content={CustomTooltip} />
             <Area
               type="monotone"
-              dataKey="earnings"
+              dataKey="revenue"
               stroke="#0C1326"
               strokeWidth={2.5}
               fillOpacity={1}

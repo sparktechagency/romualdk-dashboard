@@ -1,26 +1,20 @@
+import CloseIcon from "@mui/icons-material/Close";
 import {
     Avatar,
-    Button,
     Dialog,
     DialogContent,
     DialogTitle,
+    IconButton,
     ImageList,
     ImageListItem,
+    Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableRow,
-    Paper,
-    IconButton,
+    TableRow
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 
-import { AiOutlineSecurityScan } from "react-icons/ai";
-import { CiWifiOn } from "react-icons/ci";
-import { IoGiftOutline } from "react-icons/io5";
-import { LuMonitor } from "react-icons/lu";
-import { TbAirConditioning, TbCat } from "react-icons/tb";
 import { imageUrl } from "../../../redux/base/baseAPI";
 import MuiImageViewer from "../../shared/MuiImageViewer";
 
@@ -34,16 +28,10 @@ const CarDetailsModal = ({ open, onClose, selectedCar }: Props) => {
     if (!selectedCar) return null;
 
     console.log("selectedCar", selectedCar);
-    
+
     const lastImage = selectedCar.images[selectedCar.images.length - 1];
 
-    // Map car facilities to icons (adjust as needed)
-    const facilityIcons = {
-        "AC": <TbAirConditioning />,
-        "USB Charger": <IoGiftOutline />,
-        "Child Seat": <TbCat />,
-        "Music System": <LuMonitor />,
-    };
+
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
@@ -60,31 +48,31 @@ const CarDetailsModal = ({ open, onClose, selectedCar }: Props) => {
                     {/* Host Info */}
                     <div className="flex items-center gap-3 mb-7">
                         <Avatar
-                            src={`${imageUrl}${selectedCar.userId.profileImage}`}
+                            src={`${imageUrl}${selectedCar?.userId?.profileImage}`}
                             sx={{ width: 56, height: 56 }}
                         />
-                        <p className="text-lg font-medium">Host By {selectedCar.userId.fullName}</p>
+                        <p className="text-lg font-medium">Host By {selectedCar?.userId?.fullName}</p>
                     </div>
 
                     {/* Images */}
-                    
-                    <ImageList sx={{height: 200 }} cols={4} rowHeight={200}>
-                        {selectedCar.images.slice(0, 3).map((img: string, index: number) => (                            
-                                <img
-                                    src={`${imageUrl}${img}`}
-                                    alt={`Car Image ${index + 1}`}
-                                    className="object-cover w-full h-full max-h-[200px] max-w-xs rounded-3xl shrink-0!"
-                                />                            
+
+                    <ImageList sx={{ height: 200 }} cols={4} rowHeight={200}>
+                        {selectedCar?.images.slice(0, 3).map((img: string, index: number) => (
+                            <img
+                                src={`${imageUrl}${img}`}
+                                alt={`Car Image ${index + 1}`}
+                                className="object-cover w-full h-full max-h-[200px] max-w-xs rounded-3xl shrink-0!"
+                            />
                         ))}
                         {selectedCar?.images?.length > 3 && (
                             <ImageListItem sx={{ position: "relative" }}>
-                                <img                                    
+                                <img
                                     src={`${imageUrl}${lastImage}`}
                                     alt="Last Car Image"
                                     className="object-cover rounded-3xl"
                                 />
                                 <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-3xl text-white rounded-3xl">
-                                    {selectedCar.images.length - 3}+
+                                    {selectedCar?.images?.length - 3}+
                                 </div>
                             </ImageListItem>
                         )}
@@ -108,88 +96,84 @@ const CarDetailsModal = ({ open, onClose, selectedCar }: Props) => {
 
                                 <TableRow>
                                     <TableCell><strong>City</strong></TableCell>
-                                    <TableCell>{selectedCar.city}</TableCell>
+                                    <TableCell>{selectedCar?.city}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell><strong>License Plate</strong></TableCell>
-                                    <TableCell>{selectedCar.licensePlate}</TableCell>
+                                    <TableCell>{selectedCar?.licensePlate}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell><strong>Brand</strong></TableCell>
-                                    <TableCell>{selectedCar.brand}</TableCell>
+                                    <TableCell>{selectedCar?.brand}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell><strong>Seats</strong></TableCell>
-                                    <TableCell>{selectedCar.seatNumber}</TableCell>
+                                    <TableCell>{selectedCar?.seatNumber}</TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell><strong>Transmission</strong></TableCell>
-                                    <TableCell>{selectedCar.transmission}</TableCell>
+                                    <TableCell>{selectedCar?.transmission}</TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell><strong>Fuel Type</strong></TableCell>
-                                    <TableCell>{selectedCar.fuelType}</TableCell>
+                                    <TableCell>{selectedCar?.fuelType}</TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell><strong>Air Conditioning</strong></TableCell>
-                                    <TableCell>{selectedCar.airConditioning ? "Yes" : "No"}</TableCell>
+                                    <TableCell>{selectedCar?.airConditioning ? "Yes" : "No"}</TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell><strong>GPS Navigation</strong></TableCell>
-                                    <TableCell>{selectedCar.gpsNavigation ? "Yes" : "No"}</TableCell>
+                                    <TableCell>{selectedCar?.gpsNavigation ? "Yes" : "No"}</TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell><strong>Mileage</strong></TableCell>
-                                    <TableCell>{selectedCar.mileage}</TableCell>
+                                    <TableCell>{selectedCar?.mileage}</TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell><strong>Color</strong></TableCell>
-                                    <TableCell>{selectedCar.color}</TableCell>
+                                    <TableCell>{selectedCar?.color}</TableCell>
                                 </TableRow>
 
-                                {/* Description */}
                                 <TableRow>
                                     <TableCell colSpan={2}>
                                         <strong>Description</strong>
-                                        <p className="mt-2 text-slate-600">{selectedCar.about}</p>
+                                        <p className="mt-2 text-slate-600">{selectedCar?.about}</p>
                                     </TableCell>
                                 </TableRow>
-
-                                {/* Facilities */}
                                 <TableRow>
-                                    <TableCell><strong>Facilities</strong></TableCell>
+                                    <TableCell><strong>Facilities : </strong></TableCell>
                                     <TableCell>
                                         <div className="flex flex-wrap gap-2">
-                                            {selectedCar?.facilities?.map((f: string, i: number) => (
+                                            {selectedCar?.facilities?.map((f: any, i: number) => (
                                                 <div
                                                     key={i}
                                                     className="flex items-center gap-2 bg-primary/20 px-3 py-1 rounded-md text-slate-700"
                                                 >
-                                                    {(facilityIcons as any)[f] || <IoGiftOutline />}
-                                                    {f}
+                                                    {f?.label}                                                    
                                                 </div>
                                             ))}
                                         </div>
                                     </TableCell>
                                 </TableRow>
+
                             </TableBody>
                         </Table>
                     </TableContainer>
 
-                    {/* Documents */}
                     <h3 className="text-xl font-semibold border-t mt-6 pt-5">Car Documents</h3>
                     <div className="flex gap-10 mt-3">
-                        <div className="flex gap-3 cursor-pointer">                            
+                        <div className="flex gap-3 cursor-pointer">
                             <MuiImageViewer src={`${imageUrl}${selectedCar?.carRegistrationPaperBackPic}`} alt="Front" width={60} />
                         </div>
-                        <div className="flex gap-3 cursor-pointer">                            
-                            <MuiImageViewer src={`${imageUrl}${selectedCar?.carRegistrationPaperFrontPic}`} alt="Front" width={60} />                            
+                        <div className="flex gap-3 cursor-pointer">
+                            <MuiImageViewer src={`${imageUrl}${selectedCar?.carRegistrationPaperFrontPic}`} alt="Front" width={60} />
                         </div>
                     </div>
                 </div>

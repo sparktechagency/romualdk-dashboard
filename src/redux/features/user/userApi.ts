@@ -19,7 +19,7 @@ const userApi = baseApi.injectEndpoints({
     createAdmin: build.mutation({
       query: (data)=>{
         return {
-          url: "/users",
+          url: "/users/create-admin",
           method: "POST",
           body: data
         }
@@ -34,10 +34,20 @@ const userApi = baseApi.injectEndpoints({
         }
       }
     }),
-    updateUser: build.mutation({
+    updateAdminStatus: build.mutation({
       query: (data)=>{        
         return {
-          url: `/users/${data?.id}`,
+          url: `/users/admin/status/${data?.id}`,
+          method: "PATCH",
+          body: data
+        }        
+      },
+      invalidatesTags: ['user', 'admin'],      
+    }),
+    updateUserStatus: build.mutation({
+      query: (data)=>{        
+        return {
+          url: `/users/status/${data?.id}`,
           method: "PATCH",
           body: data
         }        
@@ -47,7 +57,7 @@ const userApi = baseApi.injectEndpoints({
     deleteUser: build.mutation({
       query: (id)=>{
         return {
-          url: `/users/${id}`,
+          url: `/users/admins/${id}`,
           method: "DELETE"
         }
       }
@@ -65,8 +75,9 @@ export const {
     useGetProfileQuery,
     useGetAllSubscriberQuery,
 
+    useUpdateAdminStatusMutation,
     useDeleteUserMutation,
     useEditProfileMutation,
     useCreateAdminMutation,
-    useUpdateUserMutation,
+    useUpdateUserStatusMutation,
  } = userApi;

@@ -1,8 +1,6 @@
 import {
   Avatar,
   Button,
-  ImageList,
-  ImageListItem,
   Table
 } from "@mui/material";
 import { AiOutlineSecurityScan } from "react-icons/ai";
@@ -10,15 +8,9 @@ import { CiWifiOn } from "react-icons/ci";
 import { IoGiftOutline } from "react-icons/io5";
 import { LuMonitor } from "react-icons/lu";
 import { TbAirConditioning, TbCat } from "react-icons/tb";
-import { itemData } from "../CarManage/CarManage";
-
-
-
-
 
 const HostRequestDetails = () => {
 
-  const lastItem = itemData[itemData?.length - 1];
 
   const featuresData = {
     carId: "Yes",
@@ -43,8 +35,7 @@ const HostRequestDetails = () => {
       { icon: <LuMonitor />, name: "TV" },
       { icon: <AiOutlineSecurityScan />, name: "Security" },
     ],
-  };
-  console.log('itemData', itemData)
+  };  
   return (
     <div className="bg-white shadow p-5">
       <div className="flex items-center justify-between mb-5  !h-full">
@@ -68,7 +59,7 @@ const HostRequestDetails = () => {
         <p className="text-lg font-medium">Host By Jack Dawson</p>
       </div>
 
-      <ImageList sx={{ display: "flex", gap: 0, width: "100%", height: 300 }}>
+      {/* <ImageList sx={{ display: "flex", gap: 0, width: "100%", height: 300 }}>
         {itemData &&
           itemData?.slice(0, 3)?.map((item) => (
             // <ImageListItem sx={{width: '100%'}} key={item.img}>
@@ -95,7 +86,7 @@ const HostRequestDetails = () => {
             {itemData?.length - 3}+
           </div>
         </ImageListItem>}
-      </ImageList>
+      </ImageList> */}
 
       <div className="flex items-center justify-between py-5">
         <h3 className="text-2xl font-semibold">

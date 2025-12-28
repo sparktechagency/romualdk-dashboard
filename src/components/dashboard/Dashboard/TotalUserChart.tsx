@@ -33,7 +33,6 @@ const TotalUserChart = () => {
   const currentYear = new Date().getFullYear();
   const CustomTooltip = ({ active, payload }: any) => {
     const isVisible = active && payload && payload.length;
-    console.log("payload", payload);
 
     return (
       <div

@@ -34,7 +34,7 @@ setSearchText(searchTerm)
     <div>
       {open ? <p onClick={()=>setOpen(false)} className="mb-5 cursor-pointer"><ArrowLeftOutlined size={20}/> Back</p> :
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-3xl text-primary font-semibold">Property List</h1>
+        <h1 className="text-3xl text-primary font-semibold">Host Requests</h1>
         <div className="flex gap-5">
 
 
@@ -62,7 +62,7 @@ setSearchText(searchTerm)
       </div>}
 
      {!open ?  <div className="bg-white h-full shadow">
-        <HostRequestList  open={open} setOpen={setOpen}/>
+        <HostRequestList />
       </div> 
       :
       <div className="">

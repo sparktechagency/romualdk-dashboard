@@ -6,20 +6,28 @@ const hostApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
 
     getHostRequests: build.query({
-      query: () => "/users/host",
+      query: () => `/users/host-request${location.search}`,
       providesTags: ["host"],
       transformResponse: (res: { data: any }) => res.data,
     }),
     
     getHostRequestsById: build.query({
       query: (id: string) => `/users/host/${id}`,
-      providesTags: ["host"],
+      providesTags: ["host-request"],
       transformResponse: (res: { data: any }) => res.data,
     }),
     
+    updateHostRequestStatus: build.mutation({
+      query: (data)=>({
+        url: `/users/host-request/status/${data?.id}`,
+        method: "PATCH",
+        body: data
+      }),
+      invalidatesTags: ["host-request"],
+    }),
     
     getHosts: build.query({
-      query: () => "/users/host",
+      query: () => `/users/host${location.search}`,
       providesTags: ["host"],
       transformResponse: (res: { data: any }) => res.data,
     }),
@@ -30,11 +38,11 @@ const hostApi = baseApi.injectEndpoints({
       transformResponse: (res: { data: any }) => res.data,
     }),
     
-    updateHost: build.mutation({
-      query: ({ id, formData }: { id: string; formData: any }) => ({
-        url: `/users/host/${id}`,
+    updateHostStatus: build.mutation({
+      query: (data) => ({
+        url: `/users/host/status/${data?.id}`,
         method: "PATCH",
-        body: formData,
+        body: data,
       }),
       invalidatesTags: ["host"],
     }),
@@ -52,8 +60,10 @@ const hostApi = baseApi.injectEndpoints({
 export const {
   useGetHostsQuery,
   useGetHostByIdQuery,
-  useUpdateHostMutation,
+  useUpdateHostStatusMutation,
   useDeleteHostMutation,
+  useUpdateHostRequestStatusMutation, 
+
   useGetHostRequestsQuery,
   useGetHostRequestsByIdQuery
 } = hostApi;

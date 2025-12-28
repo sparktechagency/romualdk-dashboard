@@ -1,8 +1,19 @@
-import { Button, ConfigProvider, Form, Input, Modal, Select } from "antd";
-import { useEffect } from "react";
-import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-
-const { Option } = Select;
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  MenuItem,
+  Button,
+  Box,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  MdOutlineVisibility,
+  MdOutlineVisibilityOff,
+} from "react-icons/md";
 
 const AddAdminModal = ({
   editData,
@@ -10,122 +21,173 @@ const AddAdminModal = ({
   setOpen,
   onSubmit,
 }: any) => {
-  const [form] = Form.useForm();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+    password: "",
+  });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<any>({});
+
+  // Prefill form on edit
   useEffect(() => {
     if (editData) {
-      form.setFieldsValue(editData); // Prepopulate form with edit data
+      setFormData({
+        firstName: editData.firstName || "",
+        lastName: editData.lastName || "",
+        email: editData.email || "",
+        role: editData.role || "",
+        password: "",
+      });
     }
   }, [editData]);
 
-  const handleCancel = () => {
+  const handleClose = () => {
     setOpen(false);
-    form.resetFields();
+    setErrors({});
+    setFormData({
+       firstName: "",
+    lastName: "",
+      email: "",
+      role: "",
+      password: "",
+    });
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        onSubmit(values); // Submit data
-        setOpen(false);
-        form.resetFields();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+  const handleChange = (e: any) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Simple validation
+  const validate = () => {
+    const newErrors: any = {};
+
+    if (!formData.firstName) newErrors.name = "Please enter first name";
+    if (!formData.lastName) newErrors.name = "Please enter last name";
+    if (!formData.email) {
+      newErrors.email = "Please enter email";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    if (!formData.role) newErrors.role = "Please select role";
+
+    if (!editData && !formData.password) {
+      newErrors.password = "Please enter password";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) return;
+
+    onSubmit(formData);
+    handleClose();
   };
 
   return (
-    <Modal
-      title={!editData ? "Add Admin" : "Edit Admin"}
-      open={open}
-      onCancel={handleCancel}
-      onOk={handleOk}
-      okText={!editData ? "Save" : "Update"}
-      cancelText="Cancel"
-      centered
-      footer={null} // Custom footer
-    >
-      <Form form={form} layout="vertical">
-        {/* Name Field */}
-        <Form.Item
-          label={<p className="text-lg text-gray-700">Name</p>}
-          name="name"
-          rules={[{ required: true, message: "Please enter name" }]}
-        >
-          <Input placeholder="Enter name" style={{ height: 45, color: "#121212" }} />
-        </Form.Item>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <DialogTitle>
+        {editData ? "Edit Admin" : "Add Admin"}
+      </DialogTitle>
 
-        {/* Email Field */}
-        <Form.Item
-          label={<p className="text-lg text-gray-700">Email</p>}
-          name="email"
-          rules={[
-            { required: true, message: "Please enter email" },
-            { type: "email", message: "Enter a valid email" },
-          ]}
-        >
-          <Input placeholder="Enter email" style={{ height: 45, color: "#121212" }} />
-        </Form.Item>
+      <DialogContent>
+        <Box display="flex" flexDirection="column" gap={2} mt={1}>
+          {/* Name */}
+          <TextField
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            error={!!errors.name}
+            helperText={errors.name}
+            fullWidth
+          />
+          <TextField
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            error={!!errors.name}
+            helperText={errors.name}
+            fullWidth
+          />
 
-        {/* Role Field */}
-         <ConfigProvider theme={{
-            components: {
-              Select: {                
-                colorTextPlaceholder: "#393E46",                                
-                optionSelectedColor: "#fff",  
-                optionSelectedBg: "#393E46",  
-                colorText: "#121212",
-                optionActiveBg: "#bfb4b4"
-              }
-            }
-          }}>
-        <Form.Item
-          label={<p className="text-lg text-gray-700">Role</p>}
-          name="role"
-          rules={[{ required: true, message: "Please select role" }]}
-        >
-         
-          <Select placeholder="Select role" style={{ height: 45, color: "#121212" }}>
-            <Option value="SUPER_ADMIN">Super Admin</Option>
-            <Option value="ADMIN">Admin</Option>            
-          </Select>
-          
-        </Form.Item>
-</ConfigProvider>
-        {/* Password Field (only for Add Admin) */}
-        {!editData && (
-          <Form.Item
-            label={<p className="text-lg text-gray-700">Password</p>}
-            name="password"
-            rules={[{ required: !editData, message: "Please enter password" }]}
-          >
-            <Input.Password
-              placeholder="Enter password"
-              iconRender={(visible) =>
-                visible ? (
-                  <MdOutlineVisibility size={20} color="#808080" cursor="pointer" />
-                ) : (
-                  <MdOutlineVisibilityOff size={20} color="#808080" cursor="pointer" />
-                )
-              }
-              style={{ height: 45 }}
+          {/* Email */}
+          <TextField
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
+            fullWidth
+          />
+
+          {/* Role */}
+          <TextField
+            select
+            label="Role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            error={!!errors.role}
+            helperText={errors.role}
+            fullWidth
+          >            
+            <MenuItem value="ADMIN">Admin</MenuItem>
+          </TextField>
+
+          {/* Password (only add mode) */}
+          {!editData && (
+            <TextField
+              label="Password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <MdOutlineVisibility />
+                      ) : (
+                        <MdOutlineVisibilityOff />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-          </Form.Item>
-        )}
+          )}
 
-        {/* Submit Button */}
-        <Button
-          type="primary"
-          size="large"
-          style={{ width: "100%", height: 45 }}
-          onClick={handleOk}
-        >
-          {!editData ? "Add Admin" : "Update Admin"}
-        </Button>
-      </Form>
-    </Modal>
+          {/* Submit */}
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleSubmit}
+            sx={{ height: 45, mt: 1 }}
+          >
+            {editData ? "Update Admin" : "Add Admin"}
+          </Button>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 };
 

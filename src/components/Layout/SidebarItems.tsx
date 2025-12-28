@@ -41,6 +41,7 @@ export const navItems: NavItem[] = [
     icon: <HiOutlinePresentationChartLine />,
   },
   { to: "/payments", label: "Payment / Earning", icon: <IoDiamondOutline /> },
+  { to: "/admin-manage", label: "Admin Manage", icon: <IoDiamondOutline /> },
 //   { to: "/settings", label: "Settings", icon: <LuBookText /> },
 //   {
 //     to: "/report-management",

@@ -1,18 +1,17 @@
 import {
-  Button,
-  TextField,
   Box,
-  Typography,
-  InputAdornment,
+  Button,
   IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { CiLock } from "react-icons/ci";
-import { useState, useEffect } from "react";
-import { useChangePasswordMutation } from "../../../redux/features/auth/authApi";
-import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { MdOutlineLock } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { CiLock } from "react-icons/ci";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { toast } from "sonner";
+import { useChangePasswordMutation } from "../../../redux/features/auth/authApi";
 
 export const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");

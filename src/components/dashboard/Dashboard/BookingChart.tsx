@@ -6,52 +6,65 @@ import {
   Select,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Cell,
   Pie,
   PieChart,
   ResponsiveContainer,
-  Tooltip
+  Tooltip,
 } from "recharts";
+import { useGetBookingChartQuery } from "../../../redux/features/dashboard/dashboardApi";
 
 const currentYear = new Date().getFullYear();
-
-const COLORS = ["#00C49F", "#FFBB28", "#0088FE", "#FF0000"];
+const COLORS = ["#00C49F", "#FF0000" ];
 
 const BookingChart = () => {
   const [selectedYear, setSelectedYear] = useState("");
 
-  const data01 = [
-    { name: "Completed", value: 700 },
-    { name: "Upcoming", value: 300 },
-    { name: "Active", value: 300 },
-    { name: "Cancelled", value: 200 },
-  ];
+  // API call
+  const { data: bookingChart, isLoading } = useGetBookingChartQuery({
+    year: selectedYear || undefined,
+  });
+
+    
+const chartData = useMemo(() => {
+  const stats = bookingChart?.stats;
+  if (!stats) return [];
+
+  return Object.entries(stats).map(([name, value]:any) => ({
+    name,
+    value: Number(value.split('%')?.[0]),
+  }));
+}, [bookingChart]);
+
+console.log("chartData",chartData);
+
+
+
 
   const handleChange = (event: SelectChangeEvent) => {
-    const value = event.target.value as string;
-    setSelectedYear(value);
+    setSelectedYear(event.target.value as string);
   };
 
+  // % label inside pie
   const renderCustomizedLabel = ({ percent }: any) =>
-  `${(percent * 100).toFixed(1)}%`;
+    `${(percent * 100).toFixed(1)}%`;
 
   return (
     <div className="bg-white p-5 pb-0 rounded-xl h-full shadow">
-      <div className="flex  items-center justify-between ">
-        <div className="">
-          <p className="font-semibold text-primary text-2xl">Booking</p>
-        </div>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <p className="font-semibold text-primary text-2xl">Booking</p>
+
         <Box sx={{ minWidth: 150 }}>
           <FormControl fullWidth size="small">
-            <InputLabel size="small" id="booking">
-              Year
-            </InputLabel>
+            <InputLabel id="booking-year">Year</InputLabel>
             <Select
-              labelId="booking"
+              labelId="booking-year"
               size="small"
               value={selectedYear}
+              label="Year"
               onChange={handleChange}
             >
               <MenuItem value="">None</MenuItem>
@@ -64,41 +77,50 @@ const BookingChart = () => {
           </FormControl>
         </Box>
       </div>
-      <Box sx={{ height: 280, width: "100%", display: "flex", alignItems: 'end' }}>
-        <ResponsiveContainer className="w-full h-[450px]">
-          <PieChart cx="Percentage">
-            <Pie
-              data={data01}
-              dataKey="value"
-              cx="50%"
-              cy="50%"
-              outerRadius="50%"
-              fill="#8884d8"              
-              label={renderCustomizedLabel}
-              // isAnimationActive={isAnimationActive}
-            >
-              {data01.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
+
+      {/* Chart */}
+      <Box
+        sx={{
+          height: 280,
+          width: "100%",
+          display: "flex",
+          alignItems: "end",
+        }}
+      >
+        <ResponsiveContainer width="100%" height={260}>
+          {isLoading || chartData.length === 0 ? (
+            <p className="text-center mt-20 text-slate-500">
+              Loading...
+            </p>
+          ) : (
+            <PieChart>
+              <Pie
+                data={chartData}
+                dataKey="value"
+                cx="50%"
+                cy="50%"
+                outerRadius="60%"
+                label={renderCustomizedLabel}
+              >
+                {chartData.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `${value}%`} />
+            </PieChart>
+          )}
         </ResponsiveContainer>
-        <div className="">
+
+        {/* Legend */}
+        <div className="ml-4 space-y-2">
           <div className="flex items-center gap-2 text-slate-600">
-            <span className="w-3 h-3 bg-[#00C49F] inline-block " /> Completed
+            <span className="w-3 h-3 bg-[#00C49F] inline-block" /> Completed
           </div>
           <div className="flex items-center gap-2 text-slate-600">
-            <span className="w-3 h-3 bg-[#FFBB28] inline-block " /> Upcoming
-          </div>
-          <div className="flex items-center gap-2 text-slate-600">
-            <span className="w-3 h-3 bg-[#0088FE] inline-block " /> Active
-          </div>
-          <div className="flex items-center gap-2 text-slate-600">
-            <span className="w-3 h-3 bg-[#FF0000] inline-block " /> Cancelled
+            <span className="w-3 h-3 bg-[#FF0000] inline-block" /> Cancelled
           </div>
         </div>
       </Box>

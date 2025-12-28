@@ -6,7 +6,7 @@ export const carApi = baseApi.injectEndpoints({
     // ✅ Get all cars
     getCars: builder.query({
       query: (params) => ({
-        url: "/cars",
+        url: `/cars${location.search}`,
         method: "GET",
         params,
       }),

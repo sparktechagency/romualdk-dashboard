@@ -7,6 +7,8 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
  
     baseUrl: "http://10.10.7.41:5003/api/v1",    
+    // baseUrl: "http://10.10.7.51:5005/api/v1",    
+    // baseUrl: "http://10.10.7.46:5003/api/v1",    
     prepareHeaders: (headers) => {
       headers.set("ngrok-skip-browser-warning", "true");
       const token = Cookies.get("accessToken");
@@ -18,7 +20,8 @@ export const baseApi = createApi({
     credentials: "include",
   }),
   endpoints: () => ({}),
-  tagTypes: ["user", "notifications", "admin", "category", "verification", "host", "car"],
+  tagTypes: ["user", "notifications", "admin", "category", "verification", "host-request", "host", "car"],
 });
 
 export const imageUrl = "http://10.10.7.41:5003";
+// export const imageUrl = "http://10.10.7.51:5005";

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { IconButton, Menu, MenuItem, styled, TablePagination } from "@mui/material";
+import { IconButton, styled, TablePagination } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,11 +10,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import { EyeOutlined } from "@ant-design/icons";
-import { FaLock } from "react-icons/fa";
-import { IoCheckmarkDoneOutline } from "react-icons/io5";
-import { MdMoreVert } from "react-icons/md";
-import { useUpdateVerificationMutation } from "../../../redux/features/verification/verificationApi";
 import { imageUrl } from "../../../redux/base/baseAPI";
+import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import { useGetCarsQuery } from "../../../redux/features/cars/carApi";
+import TableSkeleton from "../../shared/TableSkeleton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -22,7 +22,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.common.white,
     fontWeight: 500,
     fontSize: 18,
-    textAlign: 'start'
+    textAlign: "start",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 16,
@@ -33,7 +33,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -43,59 +42,43 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-
 type props = {
-  carData: any,
-  open: boolean,
-  setOpen: any,
-  details: boolean,
-  setDetails: any
-  setSelectedCar: any
-}
+  open: boolean;
+  setOpen: any;
+  setSelectedCar: any;
+};
 
+const CartList = ({ setOpen, setSelectedCar }: props) => {
+  const { data: carData, refetch, isLoading } = useGetCarsQuery({});
 
-const CartList = ({ carData, open, setOpen, details, setDetails, setSelectedCar }: props) => {
+  console.log("carData", carData);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { searchTerm, page, limit } = getSearchParams();
+  const updateSearchParams = useUpdateSearchParams();
 
+  //@ts-ignore
+  const [currentPage, setCurrentPage] = useState(Math.max(0, (page || 1) - 1));
+  const [rowsPerPage, setRowsPerPage] = useState(limit || 5);
 
+  // Sync local state with URL params
+  useEffect(() => {
+    //@ts-ignore    
+    refetch()
+  }, [page, limit, searchTerm]);
 
-  const [menuAnchor, setMenuAnchor] = useState<{ anchor: HTMLElement | null; id: string | null }>({
-    anchor: null,
-    id: null,
-  });
-
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
-    setMenuAnchor({ anchor: event.currentTarget, id });
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    // Convert 0-based MUI page to 1-based API page
+    const apiPage = newPage + 1;
+    setCurrentPage(newPage);
+    updateSearchParams({ page: apiPage });
   };
-
-  const handleMenuClose = () => {
-    setMenuAnchor({ anchor: null, id: null });
-  };
-
-  const handleToggleStatusPage = async (status: string, id: string) => {
-    try {
-      await useUpdateVerificationMutation({ id, verificationStatus: status })
-      refetch();
-    } catch (error) {
-      console.log(error);
-    }
-    handleMenuClose();
-  };
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    console.log("event", event);
-
-    setCurrentPage(newPage)
-  }
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(0);
+    const newLimit = parseInt(event.target.value, 10);
+    setRowsPerPage(newLimit);
+    setCurrentPage(0); // Reset to first page (0-based)
+    updateSearchParams({ limit: newLimit, page: 1 }); // Reset to first page (1-based for API)
   };
-
 
   return (
     <TableContainer component={Paper}>
@@ -104,78 +87,97 @@ const CartList = ({ carData, open, setOpen, details, setDetails, setSelectedCar 
           <StyledTableRow>
             <StyledTableCell>Properties Name</StyledTableCell>
             <StyledTableCell align="right">Host Name</StyledTableCell>
+            <StyledTableCell align="right">Contact</StyledTableCell>
             <StyledTableCell align="right">Location</StyledTableCell>
-            <StyledTableCell align="right">Status</StyledTableCell>
             <StyledTableCell align="right">Action</StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        <TableBody>
-          {carData && carData?.data?.map((row: any, index: number) => (
-            <StyledTableRow
-              key={index}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              {/* Property (Car Pic + Brand) */}
-              <TableCell component="th" scope="row">
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <img
-                    src={`${imageUrl}${row.images?.[0]}`}
-                    alt={`${row.brand} ${row.model}`}
-                    style={{
-                      width: 50,
-                      height: 40,
-                      borderRadius: 8,
-                      objectFit: "cover",
-                    }}
-                  />
-                  <span style={{ fontWeight: 500 }}>
-                    {row.brand} {row.model}
-                  </span>
-                </div>
-              </TableCell>
-
-              {/* Host Name */}
-              <TableCell align="left">
-                {row.userId?.fullName}
-              </TableCell>
-
-              {/* Contact */}
-              <TableCell align="left">
-                {row.userId?.phone}
-              </TableCell>
-
-              {/* Location */}
-              <TableCell align="left">
-                {row.city}
-              </TableCell>
-
-              {/* Actions */}
-              <TableCell align="left">
-                <IconButton
-                  onClick={() => {
-                    setSelectedCar(row);
-                    setOpen(true);
-                  }}
+        {isLoading ? (
+          <TableSkeleton rows={Number(rowsPerPage)} cols={5} />
+        ) :
+          (<TableBody>
+            {carData?.data && carData.data.length > 0 ? (
+              carData.data.map((row: any, index: number) => (
+                <StyledTableRow
+                  key={row._id || index}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <EyeOutlined />
-                </IconButton>
-              </TableCell>
-            </StyledTableRow>
-          ))}
+                  {/* Property (Car Pic + Brand) */}
+                  <TableCell component="th" scope="row">
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {row.images?.[0] ? (
+                        <img
+                          src={`${imageUrl}${row.images[0]}`}
+                          alt={`${row.brand} ${row.model}`}
+                          style={{
+                            width: 50,
+                            height: 40,
+                            borderRadius: 8,
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 50,
+                            height: 40,
+                            borderRadius: 8,
+                            backgroundColor: "#f0f0f0",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <span style={{ fontSize: 12 }}>🚗</span>
+                        </div>
+                      )}
+                      <span style={{ fontWeight: 500 }}>
+                        {row.brand} {row.model}
+                      </span>
+                    </div>
+                  </TableCell>
 
-        </TableBody>
+                  {/* Host Name */}
+                  <TableCell align="left">{row.userId?.fullName || "N/A"}</TableCell>
+
+                  {/* Contact */}
+                  <TableCell align="left">{row.userId?.phone || "N/A"}</TableCell>
+
+                  {/* Location */}
+                  <TableCell align="left">{row.city || "N/A"}</TableCell>
+
+                  {/* Actions */}
+                  <TableCell align="left">
+                    <IconButton
+                      onClick={() => {
+                        setSelectedCar(row);
+                        setOpen(true);
+                      }}
+                    >
+                      <EyeOutlined />
+                    </IconButton>
+                  </TableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
+                  No cars found
+                </TableCell>
+              </StyledTableRow>
+            )}
+          </TableBody>)}
       </Table>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={carData?.length}
+        count={carData?.meta?.total || 0}
+        //@ts-ignore
         rowsPerPage={rowsPerPage}
         page={currentPage}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-
-
     </TableContainer>
   );
 };
