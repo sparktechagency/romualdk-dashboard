@@ -42,6 +42,7 @@ export const navItems: NavItem[] = [
   },
   { to: "/payments", label: "Payment / Earning", icon: <IoDiamondOutline /> },
   { to: "/admin-manage", label: "Admin Manage", icon: <IoDiamondOutline /> },
+  { to: "/driver-price", label: "Driver Price", icon: <IoDiamondOutline /> },
 //   { to: "/settings", label: "Settings", icon: <LuBookText /> },
 //   {
 //     to: "/report-management",

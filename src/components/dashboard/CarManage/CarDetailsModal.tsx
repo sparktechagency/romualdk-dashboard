@@ -81,7 +81,7 @@ const CarDetailsModal = ({ open, onClose, selectedCar }: Props) => {
                     {/* Title & Price */}
                     <div className="flex justify-between py-5">
                         <h3 className="text-2xl font-semibold">{selectedCar?.brand} {selectedCar?.model} ({selectedCar?.year})</h3>
-                        <h3 className="text-2xl font-semibold">৳{selectedCar?.dailyPrice}/day</h3>
+                        <h3 className="text-2xl font-semibold">{selectedCar?.dailyPrice}/day</h3>
                     </div>
 
                     {/* Features Table */}

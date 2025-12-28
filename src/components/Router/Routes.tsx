@@ -18,6 +18,7 @@ import Settings from "../dashboard/Settings/Settings";
 import Verification from "../dashboard/Verification/Verification";
 import PrivateRoute from "./PrivateRoute";
 import AdminList from "../dashboard/AdminList/AdminList";
+import DriverPrice from "../dashboard/DriverPrice/DriverPrice";
 
 const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
             {
                 path: "booking-manage",
                 element: <BookingManage />
+            },           
+            {
+                path: "driver-price",
+                element: <DriverPrice />
             },           
             {
                 path: "payments",
