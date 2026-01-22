@@ -19,6 +19,8 @@ import Verification from "../dashboard/Verification/Verification";
 import PrivateRoute from "./PrivateRoute";
 import AdminList from "../dashboard/AdminList/AdminList";
 import DriverPrice from "../dashboard/DriverPrice/DriverPrice";
+import PaymentSuccess from "../../Pages/Payment/PaymentSuccess";
+import PaymentFailed from "../../Pages/Payment/PaymentFailed";
 
 const router = createBrowserRouter([
     {
@@ -104,6 +106,8 @@ const router = createBrowserRouter([
     {path: "/forgot-password", element: <ForgotPassword />},
     {path: "/verify-otp", element: <OTPVerify />},
     {path: "/new-password", element: <NewPassword />},
+    {path: "/payment-success", element: <PaymentSuccess />},
+    {path: "/payment-failed", element: <PaymentFailed />},
 ]);
 
 

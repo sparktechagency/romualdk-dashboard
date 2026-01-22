@@ -91,7 +91,7 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
     handleMenuClose();
   };
 
-  const handleChangePage = ( newPage: number) => {
+  const handleChangePage = (newPage: number) => {
     const apiPage = newPage + 1;
     setCurrentPage(newPage);
     updateSearchParams({ page: apiPage });
@@ -187,12 +187,12 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
                     open={menuAnchor.id === host._id && Boolean(menuAnchor.anchor)}
                     onClose={handleMenuClose}
                   >
-                    <MenuItem disabled={host.status === "ACTIVE"} onClick={() => handleToggleStatusPage("ACTIVE", host._id)}>
+                    <MenuItem disabled={host.status === "ACTIVE"} onClick={() => handleToggleStatusPage("blocked", host._id)}>
                       <IoCheckmarkDoneOutline className="text-green-500" style={{ marginRight: 8 }} />
                       Active
                     </MenuItem>
 
-                    <MenuItem disabled={host?.status === "INACTIVE"} onClick={() => handleToggleStatusPage("INACTIVE", host._id)}>
+                    <MenuItem disabled={host?.status === "INACTIVE"} onClick={() => handleToggleStatusPage("blocked", host._id)}>
                       <FaLock className="text-red-500" style={{ marginRight: 8 }} />
                       Blocked
                     </MenuItem>
