@@ -6,7 +6,7 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
  
-    baseUrl: "http://10.10.7.41:5003/api/v1",    
+    baseUrl: "https://api.goconnecte.com/api/v1",    
     // baseUrl: "http://10.10.7.51:5005/api/v1",    
     // baseUrl: "http://10.10.7.46:5003/api/v1",    
     prepareHeaders: (headers) => {
@@ -23,5 +23,5 @@ export const baseApi = createApi({
   tagTypes: ["user", "notifications", "admin", "category", "verification", "host-request", "host", "car"],
 });
 
-export const imageUrl = "http://10.10.7.41:5003";
+export const imageUrl = "https://api.goconnecte.com";
 // export const imageUrl = "http://10.10.7.51:5005";
