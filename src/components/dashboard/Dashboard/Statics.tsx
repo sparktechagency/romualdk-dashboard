@@ -3,10 +3,10 @@ import { useGetAnalyticsQuery } from "../../../redux/features/dashboard/dashboar
 
 const Statics = () => {
 
-  const {data: analyticsData} = useGetAnalyticsQuery({});
+  const { data: analyticsData } = useGetAnalyticsQuery({});
 
   console.log("analyticsData", analyticsData);
-  
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-x-10 justify-between">
       <Box
@@ -63,7 +63,7 @@ const Statics = () => {
           Total Revenue
         </p>
         <h1 className="font-semibold text-center text-white mt-4 text-4xl">
-          5000
+          {analyticsData?.revenue ?? 0}
         </h1>
       </Box>
     </div>
