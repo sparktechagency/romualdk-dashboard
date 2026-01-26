@@ -6,8 +6,8 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
  
-    baseUrl: "https://api.goconnecte.com/api/v1",    
-    // baseUrl: "http://10.10.7.41:5000/api/v1",    
+    // baseUrl: "https://api.goconnecte.com/api/v1",    
+    baseUrl: "http://10.10.7.41:5000/api/v1",    
     // baseUrl: "http://10.10.7.46:5003/api/v1",    
     prepareHeaders: (headers) => {
       // headers.set("ngrok-skip-browser-warning", "true");
@@ -23,5 +23,5 @@ export const baseApi = createApi({
   tagTypes: ["user", "notifications", "admin", "category", "verification", "host-request", "host", "car"],
 });
 
-export const imageUrl = "https://api.goconnecte.com";
-// export const imageUrl = "http://10.10.7.41:5000";
+// export const imageUrl = "https://api.goconnecte.com";
+export const imageUrl = "http://10.10.7.41:5000";

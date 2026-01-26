@@ -21,6 +21,7 @@ import AdminList from "../dashboard/AdminList/AdminList";
 import DriverPrice from "../dashboard/DriverPrice/DriverPrice";
 import PaymentSuccess from "../../Pages/Payment/PaymentSuccess";
 import PaymentFailed from "../../Pages/Payment/PaymentFailed";
+import Notifications from "../dashboard/Notification/Notifications";
 
 const router = createBrowserRouter([
     {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
             {
                 path: "admin-manage",
                 element: <AdminList />
+            },
+            {
+                path: "notifications",
+                element: <Notifications />
             },
             // {
             //     path: "terms-condition",

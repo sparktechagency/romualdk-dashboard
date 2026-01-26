@@ -7,10 +7,15 @@ import {
 } from "@mui/material";
 import { imageUrl } from "../../redux/base/baseAPI";
 import { useGetProfileQuery } from "../../redux/features/auth/authApi";
+import { Link } from "react-router-dom";
+import { useNotificationCountQuery } from "../../redux/features/notification/notificationApi";
 
 const DashboardHeader = () => {
   const { data: profileData } = useGetProfileQuery(undefined);
+  const {data: notificationCount} = useNotificationCountQuery({})
 
+  console.log("notificationCount", notificationCount);
+  
   return (
     <Box
       height={80}
@@ -24,11 +29,9 @@ const DashboardHeader = () => {
     >
       {/* Notification */}
 
-      <Badge badgeContent={0} showZero  color="error">
-        <NotificationsNoneOutlinedIcon
-            sx={{ fontSize: 26, color: "rgba(0,0,0,.5)" }}
-          />
-      </Badge>
+      <Link to="/notifications"><Badge badgeContent={notificationCount ?? 0} showZero  color="error">
+        <NotificationsNoneOutlinedIcon sx={{ fontSize: 26, color: "rgba(0,0,0,.5)" }} />
+      </Badge></Link>
 
       {/* Profile */}
       <Box display="flex" alignItems="center" gap={2}>
