@@ -7,8 +7,8 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    host: "10.10.7.46",
-    // host: "72.62.233.91",
+    // host: "10.10.7.46",
+    host: "72.62.233.91",
     port: 30011,
     allowedHosts: ['dashboard.goconnecte.com', 'www.dashboard.goconnecte.com']
   },
