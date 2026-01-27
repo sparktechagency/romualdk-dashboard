@@ -16,7 +16,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { toast } from "sonner";
 import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import { getSearchParams } from "../../../utils/getSearchParams";
-import { useSocket } from "../../../hooks/useSocket";
+import { getSocket } from "../../../hooks/useSocket";
 import { useGetNotificationsQuery, useReadNotificationMutation } from "../../../redux/features/notification/notificationApi";
 
 const Notifications = () => {
@@ -25,27 +25,27 @@ const Notifications = () => {
   const updateSearchParams = useUpdateSearchParams();
   const { page } = getSearchParams();
   const { data: notificationData, refetch } = useGetNotificationsQuery({});
-  const [readNotification] = useReadNotificationMutation()
+const [readNotification] = useReadNotificationMutation()
 
-  const socketRef = useSocket();
+useEffect(() => {
+  refetch();
+}, [page, refetch]);
 
-  useEffect(() => {refetch()}, [page]);
+useEffect(() => {
+  const socket = getSocket();
 
-  useEffect(() => {
-    if (!socketRef.current) return;
+  const handleNotification = () => {
+    refetch(); // your function
+  };
 
-    socketRef.current.on("notification", () => {
-      refetch();
-    });
-    socketRef.current.on("notificationRead", () => {
-      refetch();
-    });
+  socket.on('notification', handleNotification);
+  socket.on('notificationRead', handleNotification);
 
-    return () => {
-      socketRef.current?.off("notification");
-      socketRef.current?.off("notificationRead");
-    };
-  }, [socketRef]);
+  return () => {
+    socket.off('notification', handleNotification);
+    socket.off('notificationRead', handleNotification);
+  };
+}, [refetch]);
 
   const handleMarkAllRead = async () => {
     try {

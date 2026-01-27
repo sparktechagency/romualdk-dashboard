@@ -1,39 +1,50 @@
-import { useEffect, useRef } from "react";
-import { io, Socket } from "socket.io-client";
+// src/lib/socket.ts
+import { io, type Socket } from 'socket.io-client';  // ← "type" keyword is key here
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+import { imageUrl } from '../redux/base/baseAPI';
 
-export const useSocket = () => {
-  const socketRef = useRef<Socket | null>(null);
+let socketInstance: Socket | null = null;
 
-  useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io(SOCKET_URL, {
-        transports: ["websocket"],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-        withCredentials: true,
-      });
+export const initializeSocket = (): Socket => {
+  if (socketInstance) {
+    return socketInstance;
+  }
 
-      socketRef.current.on("connect", () => {
-        console.log("✅ Socket connected:", socketRef.current?.id);
-      });
+  socketInstance = io(imageUrl, {
+    transports: ['websocket', 'polling'],
+    reconnection: true,
+    reconnectionDelay: 1000,
+    reconnectionAttempts: 5,
+    autoConnect: true,
+    // withCredentials: true,     // ← add only if your server uses cookies / credentials
+    // auth: { token: getToken() }, // ← if you have JWT or similar
+  });
 
-      socketRef.current.on("disconnect", () => {
-        console.log("❌ Socket disconnected");
-      });
+  socketInstance.on('connect', () => {
+    console.log('Socket connected:', socketInstance?.id);
+  });
 
-      socketRef.current.on("connect_error", (err) => {
-        console.error("⚠️ Socket error:", err.message);
-      });
-    }
+  socketInstance.on('disconnect', (reason) => {
+    console.log('Socket disconnected:', reason);
+  });
 
-    return () => {
-      socketRef.current?.disconnect();
-      socketRef.current = null;
-    };
-  }, []);
+  socketInstance.on('connect_error', (err) => {
+    console.error('Socket connection error:', err);
+  });
 
-  return socketRef;
+  return socketInstance;
+};
+
+export const getSocket = (): Socket => {
+  if (!socketInstance) {
+    initializeSocket();
+  }
+  return socketInstance!;
+};
+
+export const disconnectSocket = () => {
+  if (socketInstance) {
+    socketInstance.disconnect();
+    socketInstance = null;
+  }
 };
