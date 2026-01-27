@@ -23,7 +23,7 @@ export const useSocket = () => {
       console.log('Socket disconnected');
     });
 
-    socketRef.current.on('connect_error', (error) => {
+    socketRef.current.on('connect_error', (error:any) => {
       console.error('Socket connection error:', error);
     });
 
