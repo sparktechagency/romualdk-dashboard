@@ -1,40 +1,39 @@
-import { useEffect, useRef } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { imageUrl } from '../redux/base/baseAPI';
+import { useEffect, useRef } from "react";
+import { io, Socket } from "socket.io-client";
 
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    // Create socket connection
-    socketRef.current = io(imageUrl, {
-      transports: ['websocket', 'polling'],
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
-    });
+    if (!socketRef.current) {
+      socketRef.current = io(SOCKET_URL, {
+        transports: ["websocket"],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        withCredentials: true,
+      });
 
-    socketRef.current.on('connect', () => {
-      console.log('Socket connected:', socketRef.current?.id);
-    });
+      socketRef.current.on("connect", () => {
+        console.log("✅ Socket connected:", socketRef.current?.id);
+      });
 
-    socketRef.current.on('disconnect', () => {
-      console.log('Socket disconnected');
-    });
+      socketRef.current.on("disconnect", () => {
+        console.log("❌ Socket disconnected");
+      });
 
-    socketRef.current.on('connect_error', (error:any) => {
-      console.error('Socket connection error:', error);
-    });
+      socketRef.current.on("connect_error", (err) => {
+        console.error("⚠️ Socket error:", err.message);
+      });
+    }
 
-    // Cleanup on unmount
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socketRef.current?.disconnect();
+      socketRef.current = null;
     };
   }, []);
 
-  return socketRef.current;
+  return socketRef;
 };

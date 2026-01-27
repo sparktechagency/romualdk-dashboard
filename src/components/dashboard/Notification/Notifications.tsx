@@ -21,40 +21,31 @@ import { useGetNotificationsQuery, useReadNotificationMutation } from "../../../
 
 const Notifications = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const updateSearchParams = useUpdateSearchParams();
   const { page } = getSearchParams();
-  const socket = useSocket(); // Initialize socket connection
-  const {data: notificationData, refetch} = useGetNotificationsQuery({});
+  const { data: notificationData, refetch } = useGetNotificationsQuery({});
   const [readNotification] = useReadNotificationMutation()
 
+  const socketRef = useSocket();
 
-  console.log("notificationData", notificationData);
-  
-  useEffect(() => {
-    refetch();
-  }, [page]);
-
+  useEffect(() => {refetch()}, [page]);
 
   useEffect(() => {
-    if (!socket) return;    
-    socket.on('notification', (data:any) => {
-      console.log('New notification received:', data);
-      toast.info(data.title || 'New notification received');
+    if (!socketRef.current) return;
+
+    socketRef.current.on("notification", () => {
+      refetch();
+    });
+    socketRef.current.on("notificationRead", () => {
       refetch();
     });
 
-    socket.on('notificationRead', () => {
-      console.log('Notification marked as read');
-      refetch();
-    });
-
-    // Cleanup listeners
     return () => {
-      socket.off('notification');
-      socket.off('notificationRead');
+      socketRef.current?.off("notification");
+      socketRef.current?.off("notificationRead");
     };
-  }, [socket, refetch]);
+  }, [socketRef]);
 
   const handleMarkAllRead = async () => {
     try {
@@ -63,7 +54,7 @@ const Notifications = () => {
 
       toast.success("Read All Notification");
       refetch();
-    } catch (error:any) {
+    } catch (error: any) {
       console.log("error", error);
       toast.error(error?.message)
     }
