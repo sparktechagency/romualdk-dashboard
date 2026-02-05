@@ -1,20 +1,25 @@
-
 import JoditEditor from "jodit-react";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useAddDisclaimerMutation, useGetTermsConditionQuery } from "../../../redux/features/setting/settingApi";
+import {
+  useAddDisclaimerMutation,
+  useGetPrivacyPolicyQuery,
+} from "../../../redux/features/setting/settingApi";
 import { Button } from "@mui/material";
 
-const TermsCondition = () => {
+const PrivacyPolicy = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [showEditor, setShowEditor] = useState(false);
-  const { data: termsData, refetch } = useGetTermsConditionQuery(undefined);
-  const [addDisclaimer ] = useAddDisclaimerMutation()
-  
-  useEffect(()=>{
-    setContent(termsData?.content)
-  },[termsData])
+
+  const { data: privacyData, refetch } = useGetPrivacyPolicyQuery(undefined);
+  const [addDisclaimer] = useAddDisclaimerMutation();
+
+  useEffect(() => {
+    if (privacyData?.content) {
+      setContent(privacyData?.content);
+    }
+  }, [privacyData]);
 
   const handleSubmit = async () => {
     const tempDiv = document.createElement("div");
@@ -26,16 +31,21 @@ const TermsCondition = () => {
       return;
     }
 
-    try {      
-      await addDisclaimer({type: "TERMS", content: content})      
+    try {
+      await addDisclaimer({
+        type: "PRIVACY",
+        content,
+      }).unwrap();
+
       toast.success("Saved successfully");
-      refetch()
+      refetch();
       setShowEditor(false);
-    } catch (err) {
-      console.error("Error saving:", err);
+    } catch (error) {
+      console.error("Error saving privacy policy:", error);
       toast.error("Failed to save content");
     }
   };
+
   const config = React.useMemo(
     () => ({
       theme: "default",
@@ -88,7 +98,7 @@ const TermsCondition = () => {
       readonly: false,
       style: {
         height: "60vh",
-        background: "#ededeed",        
+        background: "#ededed",
       },
       observer: { timeout: 100 },
     }),
@@ -98,9 +108,10 @@ const TermsCondition = () => {
   return (
     <div className="bg-white h-full p-4 rounded-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl text-primary font-semibold">Term Condition</h1>
+        <h1 className="text-2xl text-primary font-semibold">Privacy Policy</h1>
+
         <Button
-          onClick={() => setShowEditor(!showEditor)}          
+          onClick={() => setShowEditor(!showEditor)}
           size="large"
           style={{
             width: 150,
@@ -113,21 +124,22 @@ const TermsCondition = () => {
         </Button>
       </div>
 
-      {/* -------------- Editor ---------------- */}
+      {/* -------- Editor / Preview -------- */}
 
       {showEditor ? (
-        <div className="">
+        <div>
           <JoditEditor
             ref={editor}
             value={content}
             // @ts-ignore
             config={config}
-            tabIndex={1} // tabIndex of textarea
+            tabIndex={1}
             onBlur={(newContent) => setContent(newContent)}
           />
+
           <div className="flex items-center justify-end gap-4">
             <Button
-              onClick={() => setShowEditor(!showEditor)}              
+              onClick={() => setShowEditor(false)}
               size="large"
               style={{
                 width: 150,
@@ -139,8 +151,9 @@ const TermsCondition = () => {
             >
               Cancel
             </Button>
+
             <Button
-              onClick={handleSubmit}              
+              onClick={handleSubmit}
               size="large"
               style={{
                 width: 150,
@@ -155,25 +168,25 @@ const TermsCondition = () => {
           </div>
         </div>
       ) : (
-        <div>
-          <div
-            style={{
-              border: "1px solid #989898",
-              borderRadius: 20,
-              padding: "20px",
-              minHeight: "600px",
-              maxHeight: "600px",
-              marginTop: "20px",
-              color: "#121212",
-              overflow: "auto",
-              background: "transparent",
-            }}
-            dangerouslySetInnerHTML={{ __html: content || "No content yet." }}
-          />
-        </div>
+        <div
+          style={{
+            border: "1px solid #989898",
+            borderRadius: 20,
+            padding: "20px",
+            minHeight: "600px",
+            maxHeight: "600px",
+            marginTop: "20px",
+            color: "#121212",
+            overflow: "auto",
+            background: "transparent",
+          }}
+          dangerouslySetInnerHTML={{
+            __html: content || "No content yet.",
+          }}
+        />
       )}
     </div>
   );
 };
 
-export default TermsCondition;
+export default PrivacyPolicy;

@@ -15,6 +15,7 @@ import { ChangePassword } from "./ChangePassword";
 import PersonalInformation from "./PersonalInformation";
 import TermsCondition from "./TermsCondition";
 import FAQ from "./FAQ/Faq";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 // --- Placeholder for react-icons/lucide-react, using inline SVG instead ---
 // Icon component for the list items
@@ -40,6 +41,7 @@ const settingsItems = [
   { name: "Personal Information", key: "personal", icon: null },
   { name: "Change Password", key: "password", icon: null },
   { name: "Terms & Condition", key: "terms", icon: null },
+  { name: "Privacy Policy", key: "privacy", icon: null },
   { name: "About Us", key: "about", icon: null },
   { name: "FAQ", key: "faq", icon: null },
 ];
@@ -137,7 +139,11 @@ const Settings = () => {
           <ChangePassword />
         ) : selectedKey == "terms" ? (
           <TermsCondition />
-        ) : selectedKey == "about" ? (
+        )
+        : selectedKey == "privacy" ? (
+          <PrivacyPolicy />
+        )
+         : selectedKey == "about" ? (
           <About />
         ) : selectedKey == "faq" ? (
           <FAQ />

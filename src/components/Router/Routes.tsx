@@ -22,6 +22,8 @@ import DriverPrice from "../dashboard/DriverPrice/DriverPrice";
 import PaymentSuccess from "../../Pages/Payment/PaymentSuccess";
 import PaymentFailed from "../../Pages/Payment/PaymentFailed";
 import Notifications from "../dashboard/Notification/Notifications";
+import PublicPrivacy from "../../Pages/PublicPrivacy/PublicPrivacy";
+import PublicTerms from "../../Pages/PublicTerms/PublicTerms";
 
 const router = createBrowserRouter([
     {
@@ -38,7 +40,7 @@ const router = createBrowserRouter([
                 path: "dashboard",
                 element: <Dashboard />
             },
-            
+
             {
                 path: "cars-manage",
                 element: <CarManage />
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
             {
                 path: "hosts-request",
                 element: <HostRequest />
-            },           
+            },
             {
                 path: "hosts-manage",
                 element: <HostsManage />
@@ -58,11 +60,11 @@ const router = createBrowserRouter([
             {
                 path: "booking-manage",
                 element: <BookingManage />
-            },           
+            },
             {
                 path: "driver-price",
                 element: <DriverPrice />
-            },           
+            },
             {
                 path: "payments",
                 element: <Payments />
@@ -71,7 +73,7 @@ const router = createBrowserRouter([
                 path: "verification",
                 element: <Verification />
             },
-         
+
             {
                 path: "settings",
                 element: <Settings />
@@ -107,12 +109,20 @@ const router = createBrowserRouter([
             // },
         ]
     },
-    {path: "/login", element: <Login />},
-    {path: "/forgot-password", element: <ForgotPassword />},
-    {path: "/verify-otp", element: <OTPVerify />},
-    {path: "/new-password", element: <NewPassword />},
-    {path: "/payment-success", element: <PaymentSuccess />},
-    {path: "/payment-failed", element: <PaymentFailed />},
+    {
+        path: "privacy-policy",
+        element: <PublicPrivacy />
+    },
+    {
+        path: "terms-condition",
+        element: <PublicTerms />
+    },
+    { path: "/login", element: <Login /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/verify-otp", element: <OTPVerify /> },
+    { path: "/new-password", element: <NewPassword /> },
+    { path: "/payment-success", element: <PaymentSuccess /> },
+    { path: "/payment-failed", element: <PaymentFailed /> },
 ]);
 
 

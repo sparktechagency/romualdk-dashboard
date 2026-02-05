@@ -31,13 +31,15 @@ const settingApi = baseApi.injectEndpoints({
 
     getTermsCondition: builder.query({
       query: () => "/rules/TERMS",      
+      transformResponse: (res: { data: any }) => res?.data,
     }),
 
     getAbout: builder.query({
       query: () => "/rules/ABOUT",      
+      
     }),
     getPrivacyPolicy: builder.query({
-      query: () => "/disclaimer/privacy-policy",
+      query: () => "/rules/PRIVACY",      
       transformResponse: (res: { data: any }) => res?.data,
     }),
     addDisclaimer: builder.mutation({
