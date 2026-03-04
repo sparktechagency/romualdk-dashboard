@@ -7,13 +7,14 @@ const userApi = baseApi.injectEndpoints({
       providesTags: ['user'],
       transformResponse: (response: { data: any }) => response.data,
     }),
-    getAdmin: build.query({
-        query: ()=> `/admins/get-admin${location.search}`,
-        providesTags: ['admin'],
-        transformResponse: (response: {data: any})=> response.data,
-    }),
+  
     getProfile: build.query({
         query: ()=> `/users/profile`,
+        transformResponse: (response: {data: any})=> response.data,
+    }),
+      getAdmin: build.query({
+        query: ()=> `/users/admins${location.search}`,
+        providesTags: ['admin'],
         transformResponse: (response: {data: any})=> response.data,
     }),
     createAdmin: build.mutation({
@@ -25,16 +26,7 @@ const userApi = baseApi.injectEndpoints({
         }
       }
     }),
-    editProfile: build.mutation({
-      query: (data)=>{
-        return {
-        url: '/users',
-        method: "PATCH",
-        body: data,
-        }
-      }
-    }),
-    updateAdminStatus: build.mutation({
+     updateAdminStatus: build.mutation({
       query: (data)=>{        
         return {
           url: `/users/admin/status/${data?.id}`,
@@ -44,6 +36,16 @@ const userApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['user', 'admin'],      
     }),
+    editProfile: build.mutation({
+      query: (data)=>{
+        return {
+        url: '/users',
+        method: "PATCH",
+        body: data,
+        }
+      }
+    }),
+   
     updateUserStatus: build.mutation({
       query: (data)=>{        
         return {

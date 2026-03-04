@@ -18,6 +18,7 @@ import MuiImageViewer from "../../shared/MuiImageViewer";
 import { getSearchParams } from "../../../utils/getSearchParams";
 import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import TableSkeleton from "../../shared/TableSkeleton";
+import ImageDownloadButton from "../../../utils/ImageDownloadButton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -141,12 +142,24 @@ const HostRequestList = () => {
 
                 {/* Driving License Front */}
                 <TableCell align="left">
+                <div className="flex items-center gap-2">
                   <MuiImageViewer width={60} src={`${imageUrl}${row.drivingLicenseFrontPic}`} alt="Front" />
+                  <ImageDownloadButton 
+                  imageUrl={`${imageUrl}${row.drivingLicenseFrontPic}`} 
+                  fileName={`${row.firstName}-${row.lastName}-front.jpg`} 
+                  size="large" />
+                  </div> 
                 </TableCell>
 
                 {/* Driving License Back */}
                 <TableCell align="left">
-                  <MuiImageViewer width={60} src={`${imageUrl}${row.drivingLicenseBackPic}`} alt="Back" />
+                    <div className="flex items-center gap-2">
+                      <MuiImageViewer width={60} src={`${imageUrl}${row.drivingLicenseBackPic}`} alt="Back" />
+                      <ImageDownloadButton 
+                        imageUrl={`${imageUrl}${row.drivingLicenseBackPic}`} 
+                        fileName={`${row.firstName}-${row.lastName}-back.jpg`} 
+                        size="large" />
+                    </div>
                 </TableCell>
 
                 {/* Status */}

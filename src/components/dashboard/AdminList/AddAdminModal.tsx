@@ -25,7 +25,7 @@ const AddAdminModal = ({
     firstName: "",
     lastName: "",
     email: "",
-    role: "",
+    role: "ADMIN",
     password: "",
   });
 

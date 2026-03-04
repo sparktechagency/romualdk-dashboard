@@ -14,8 +14,6 @@ const DashboardHeader = () => {
   const { data: profileData } = useGetProfileQuery(undefined);
   const {data: notificationCount} = useNotificationCountQuery({})
 
-  console.log("notificationCount", notificationCount);
-  
   return (
     <Box
       height={80}

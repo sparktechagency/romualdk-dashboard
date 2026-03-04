@@ -10,6 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { imageUrl } from "../../../redux/base/baseAPI";
 import MuiImageViewer from "../../shared/MuiImageViewer";
 import dayjs from "dayjs";
+import ImageDownloadButton from "../../../utils/ImageDownloadButton";
 
 type Props = {
   open: boolean;
@@ -90,10 +91,20 @@ const GuestDetailsModal = ({ open, onClose, selectedGuest }: Props) => {
               <div className="flex items-center gap-10">
                 <div className="flex items-center gap-3 cursor-pointer">
                   <MuiImageViewer src={selectedGuest.nidFrontPic ? `${imageUrl}${selectedGuest.nidFrontPic}` : '/placeholder.png'} alt="NID Front" width={60} />
+                  <ImageDownloadButton
+                    imageUrl={selectedGuest.nidFrontPic ? `${imageUrl}${selectedGuest.nidFrontPic}` : '/placeholder.png'}
+                    fileName={`${selectedGuest.fullName}-nid-front.jpg`}
+                    size="large"
+                  />
                 </div>
 
                 <div className="flex items-center gap-3 cursor-pointer">
                   <MuiImageViewer src={selectedGuest.nidBackPic ? `${imageUrl}${selectedGuest.nidBackPic}` : '/placeholder.png'} alt="NID Front" width={60} />                </div>
+                  <ImageDownloadButton
+                    imageUrl={selectedGuest.nidBackPic ? `${imageUrl}${selectedGuest.nidBackPic}` : '/placeholder.png'}
+                    fileName={`${selectedGuest.fullName}-nid-back.jpg`}
+                    size="large"
+                  />
               </div>
             </Grid>
           </Grid>

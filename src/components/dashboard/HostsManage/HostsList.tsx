@@ -25,6 +25,7 @@ import { imageUrl } from "../../../redux/base/baseAPI";
 import { getSearchParams } from "../../../utils/getSearchParams";
 import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import TableSkeleton from "../../shared/TableSkeleton";
+import ImageDownloadButton from "../../../utils/ImageDownloadButton";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -144,12 +145,26 @@ const HostsList = ({ open, setOpen, setSelectedHost }: props) => {
 
                 {/* NID Front */}
                 <StyledTableCell >
+                  <div className="flex items-center gap-2">
                   <MuiImageViewer src={`${imageUrl}${host.nidFrontPic}`} alt="NID Front" width={60} />
+                  <ImageDownloadButton
+                    imageUrl={`${imageUrl}${host.nidFrontPic}`}
+                    fileName={`${host.firstName}-${host.lastName}-nid-front.jpg`}   
+                    size="large"
+                  />
+                  </div>
                 </StyledTableCell>
 
                 {/* NID Back */}
                 <StyledTableCell >
-                  <MuiImageViewer src={`${imageUrl}${host.nidBackPic}`} alt="NID Back" width={60} />
+                   <div className="flex items-center gap-2">
+                    <MuiImageViewer src={`${imageUrl}${host.nidBackPic}`} alt="NID Back" width={60} />
+                    <ImageDownloadButton
+                      imageUrl={`${imageUrl}${host.nidBackPic}`}
+                      fileName={`${host.firstName}-${host.lastName}-nid-back.jpg`}   
+                      size="large"
+                    />
+                   </div>
                 </StyledTableCell>
 
                 {/* Host Status */}
