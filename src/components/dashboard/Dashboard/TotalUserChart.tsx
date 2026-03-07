@@ -128,6 +128,7 @@ const TotalUserChart = () => {
               bottom: 5,
             }}
           >
+            {/* @ts-ignore */}
             <CartesianGrid vertical={false} strokeDasharray={1} />
             <XAxis dataKey="month" />
             <YAxis axisLine={false} />
